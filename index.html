@@ -1914,6 +1914,23 @@
   .month-delta.down{background:rgba(0,0,0,.06);color:var(--muted)}
   .month-delta.flat{background:rgba(0,0,0,.05);color:var(--faint)}
   .month-note{margin:8px 0 0;font-size:9.5px;color:var(--faint);letter-spacing:.02em}
+  /* v1.7.41：运动类型占比卡（双色分段条）与活跃时段卡（标签+细条+数值行） */
+  .sr-rows{margin-top:2px}
+  .sr-row{margin-top:10px}
+  .sr-row:first-child{margin-top:2px}
+  .sr-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:0 0 5px}
+  .sr-head span{font-size:11px;font-weight:600;color:var(--muted);flex:none}
+  .sr-head em{font-size:10px;color:var(--faint);font-style:normal;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .sr-track{height:8px;border-radius:99px;background:var(--soft-line);overflow:hidden;display:flex}
+  .sr-track i{display:block;height:100%}
+  .sr-walk{background:linear-gradient(90deg,#5D916C,#2D6649)}
+  .sr-ride{background:linear-gradient(90deg,#C9975C,#9C6B39)} /* 骑行用暖土色，与步行绿区分 */
+  .dp-rows{margin-top:4px}
+  .dp-row{display:flex;align-items:center;gap:8px;padding:5px 0}
+  .dp-label{font-size:11px;font-weight:600;color:var(--muted);flex:none;width:30px}
+  .dp-track{flex:1;height:6px;border-radius:99px;background:var(--soft-line);overflow:hidden}
+  .dp-track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#5D916C,#2D6649)}
+  .dp-val{font-size:10.5px;font-weight:800;color:var(--ink);flex:none;min-width:34px;text-align:right}
   .theme-current{font-size:8.5px;color:var(--muted);margin-right:8px;letter-spacing:.03em;white-space:nowrap}
   .theme-swatches{display:flex;align-items:center;gap:7px;flex:none}
   .swatch{
@@ -2808,6 +2825,66 @@
                 <div><span>累计步数</span><strong id="statsTotalSteps">39,310</strong></div>
                 <div><span>累计消耗</span><strong id="cumKcal">1,659<small>kcal</small></strong></div>
               </div>
+            </article>
+            <article class="card daily-card" data-stat-card="dailysteps"> <!-- v1.7.41：每日步数卡——本周每日步数柱状图+合计；目标类型为步数时与目标卡同口径联动，口径随运动筛选 -->
+              <div class="daily-head">
+                <div>
+                  <p class="eyebrow">DAILY STEPS</p>
+                  <h3>每日步数</h3>
+                </div>
+                <span class="sport-pill" id="dsSportPill">全部</span>
+              </div>
+              <div class="chart-total">
+                <strong id="dsTotal">0</strong><span>步</span>
+                <em id="dsRange">—</em>
+              </div>
+              <div class="chart">
+                <div class="chart-grid"><i></i><i></i><i></i></div>
+                <div class="bars" id="dsBars"></div>
+              </div>
+              <p class="month-note" id="dsNote">—</p>
+            </article>
+
+            <article class="card daily-card" data-stat-card="pace"> <!-- v1.7.41：配速走势卡——近 10 次 ≥0.5 km 记录的平均配速变化，柱高按速度归一（越高越快），口径随运动筛选 -->
+              <div class="daily-head">
+                <div>
+                  <p class="eyebrow">PACE TREND</p>
+                  <h3>配速走势</h3>
+                </div>
+                <span class="sport-pill" id="paceSportPill">全部</span>
+              </div>
+              <div class="chart-total">
+                <strong id="paceAvg">—</strong><span>/km</span>
+                <em id="paceCount">近 10 次</em>
+              </div>
+              <div class="chart">
+                <div class="chart-grid"><i></i><i></i><i></i></div>
+                <div class="bars" id="paceBars"></div>
+              </div>
+              <p class="month-note" id="paceNote">—</p>
+            </article>
+
+            <article class="card month-card" data-stat-card="sportratio"> <!-- v1.7.41：运动类型占比卡——步行 vs 骑行的次数与里程占比；固定按全部记录统计（受筛选会让占比恒为 100%，故不受运动筛选影响，也不挂口径标签） -->
+              <div class="daily-head">
+                <div>
+                  <p class="eyebrow">SPORT MIX</p>
+                  <h3>运动类型</h3>
+                </div>
+              </div>
+              <div class="sr-rows" id="srRows"></div>
+              <p class="month-note" id="srNote">—</p>
+            </article>
+
+            <article class="card month-card" data-stat-card="daypart"> <!-- v1.7.41：活跃时段卡——按记录出发时间（time 字段，缺失回退记录时间戳）分 5 时段统计次数分布，口径随运动筛选联动 -->
+              <div class="daily-head">
+                <div>
+                  <p class="eyebrow">TIME OF DAY</p>
+                  <h3>活跃时段</h3>
+                </div>
+                <span class="sport-pill" id="dpSportPill">全部</span>
+              </div>
+              <div class="dp-rows" id="dpRows"></div>
+              <p class="month-note" id="dpNote">—</p>
             </article>
             <p class="stats-quote">“走路，是最慢也最稳的远行。”<span id="statsWalkCount">SHANXING NOTES · 行走次数 5</span></p>
           </div>
@@ -4624,7 +4701,7 @@
      Route config (start / end / length)
   ------------------------------------------------------------------ */
   /* 应用版本：每次改动同步升版（与 package.json 版本保持一致） */
-  const APP_VERSION = '1.7.40'; /* v1.7.40：删除设置页「单位与显示」装饰行（Visual Edit 评论「这里有什么用？」→ 核实为纯装饰：点击仅弹 toast、meta「公里 · 千卡」为写死文案，全应用并无单位切换逻辑；经用户确认直接删除）——一并清理唯一引用的 data-setting 通用 toast 绑定与 #i-ruler 图标 symbol。v1.7.39：提醒与通知改为弹窗式设置（Visual Edit 反馈「与其他选项一样做成弹窗」）——设置页改为带箭头可点击行（meta 显示「每天 HH:MM」或「已关闭」），点击打开提醒设置弹窗 notifyLayer（总开关 + 每日时间行 + 周目标开关三行；时间为行内输入框即改即存，原独立时间弹层移除；总开关关闭时两子行置灰不可点）；设置页不再直接暴露子行。v1.7.38：提醒与通知真实化（用户选定「两种提醒都要」）——主开关持久化（shanxing:notify，关闭时隐藏子行）；新增「每日健走提醒」行+时间选择弹层（shanxing:notifyTime，默认 19:30，到点且当天未提醒则应用内提醒+已授权 Web 通知）与「周目标进度提醒」开关（shanxing:notifyGoal，周日 10 点后检查本周缺口未达标则提醒补量）；APK 端检测 Capacitor LocalNotifications 插件自动注册每日系统本地通知（未装插件静默跳过）；提醒引擎 notifyTick 参数化 now 便于测试注入。v1.7.37：完成弹层自动保存（Visual Edit 反馈「自动保存记录，只有点击放弃按钮时不保存，点击保存或其他地方退出都自动保存；保存后停留在记录界面」）——保存主体抽成共享函数 finishSave(fromClose)：点「保存这段路」、点 X、按 Esc 都自动保存记录，仅「放弃本次记录」按钮不保存；保存后不再跳「轨迹」页、留在「记录」页（补刷今日已走/称号进度/目标卡），轨迹页数据仍预刷新。v1.7.36：热力图方块补描线 border:1px solid var(--line)（无记录格保持白色，方块在浅色卡底上仍可辨；线色随主题与日夜间自适应；图例同步；占位空格不描线）——Visual Edit 反馈「方块描线还是要的」。v1.7.35：无记录格与图例 l0 底色改白色（不再随主题色显示颜色；夜间用中性白微底 rgba(255,255,255,.07) 深底可辨不刺眼）——Visual Edit 反馈「无时显示白色即可，不显示颜色」，回调 v1.7.33 的「l0 跟随主题色」；v1.7.34：热力图月块悬浮明细 + 年度运动看板 + 纯白主色热力联动（用户反馈三处）——①热力图月块悬浮浮出该月汇总明细（活跃天数/次数/里程/时长；fixed 气泡不被滚动容器裁切、拖拽中不弹）②「年度对比」卡新增「年度看板」按钮——弹层内本年逐月里程柱状图 + 6 项年度总览瓦片（总里程/总次数/总时长/总消耗/最远单次/累计步数，口径随运动筛选联动）③纯白主题六种主色下「活跃热力」色阶同步跟随（10 个 accent 变量块各补 --theme-heat-rgb=brand-rgb，修复 v1.7.32 热力基色按主题定义、未纳入 accent 覆盖的遗留）；v1.7.33：热力图日历式布局与滑动修复 + 年度对比卡（Visual Edit 反馈）——①热力图改日历式月块：每月独立 mini 日历（月标签居中 + 一~日星期头 + 周一到周日一行 7 格），12 个月横排②拖拽滑动 + 滚轮横滚（修复「还是无法滑动」：overflow 滚动本身正常，但桌面预览鼠标既拖不动、滚轮又是纵向的）③图例整排跟随主题色（l0 无记录底色也换主题色低透明度，与 l1-l4 组成完整梯度）④统计页新增「年度对比」卡（本年至今 vs 去年同期：里程/次数/消耗，随筛选联动，入卡片管理）；v1.7.32：热力图月块化与深基色（Visual Edit 反馈）——①每月数据从 1 号开始到月末结束、跨月日期不再借位补格（月块化网格：每月独立成块，1 号按真实星期行落位，1 号前/月末后的余位留空；月界空列隔离保留）②色阶换深色基色 --heat-rgb（此前两轮仅调透明度仍反馈「太淡」，根因是默认主题基色 #DFF59B 过浅、alpha 到 1.0 也只是粉彩；各主题取 track/mid 同系深色，图例同步）；v1.7.31：热力图第二轮可读性（Visual Edit 反馈）——①色阶再加深（.34/.55/.75/.96 → .5/.68/.84/1.0，图例同步）+ 图例色块 9→11px（「根本看不清，多加重」）②窗口改月对齐：恰好 12 个月（去年下月→本月，如 10 月显示 25年11月-26年10月），每年首月标签带「YY年」前缀跨年可辨、月初不再出现 13 个标签（「保留12个月，跨年也不消失」）；v1.7.30：热力图可读性增强（Visual Edit 反馈三处）——①月界空列隔离（每月之间留一列空白格，月份间隔可辨）②色阶加重（.22/.42/.68/.92 → .34/.55/.75/.96，图例同步）③今日格描边改内嵌（outline-offset -2px，不再被滚动容器边缘裁切）；v1.7.29：①GPS 轨迹详情地图升级为高德瓦片真实历史地图（轨迹 GCJ-02 与瓦片坐标系对齐，打开详情后异步升级、离线或加载失败保持示意图）②真实每公里分段配速（轨迹点带采集时间戳，按 haversine 里程插值每公里边界；老记录/手动记录回退平均配速估算并显式标注）③示意图底图标签诚实化（装饰街道名改「路线示意图」）；v1.7.28：①统计页新增「活跃热力」卡（GitHub 风格全年 53 周×7 日热力图，按当日里程 5 档着色、今日描边高亮、口径随运动筛选联动、入卡片管理体系）②周总结分享海报（热力图卡「周报海报」按钮一键生成本周总结图：合计里程/次数/时长/消耗、最远一天、周目标达成率，复用海报弹层与保存链）；v1.7.27：删除「我的」页累计数据区的口径小标签（Visual Edit 反馈，仅保留统计页累计卡/月度对比卡两枚）；v1.7.26：筛选口径小标签常显——全部口径也显示「全部」（累计卡/月度卡/我的页三处，用户反馈 v1.7.25 的「全量时隐藏」改为常显）；v1.7.25：①筛选口径小标签——非全量时统计页累计卡/月度对比卡头部与我的页累计区显示当前口径 ②统计页新增「月度对比」卡（本月 vs 上月：里程/次数/消耗，随筛选联动，入卡片管理可排序/隐藏）；v1.7.24：我的页「累计数据」区头部新增运动类型单按钮——.cum-side 右侧组（起始日期+按钮）与轨迹/统计页三处联动，累计数据随所选类型即时重算；v1.7.23：轨迹页运动类型单按钮移入筛选行内右下角（随行换行落第二行右缘）；v1.7.22：运动类型切换改为单按钮循环——全部→步行→骑行→全部，轨迹页与统计页页头各一枚，非全量时主题色高亮；v1.7.20：统计页页头新增「全部/步行/骑行」切换按钮（与轨迹/我的页联动，复用全局 sportFilter）；v1.7.19：轨迹页运动类型筛选+统计/我的页数据联动；v1.7.18：骑行模式（chips 切换、不计步、热量 28 kcal/km、模拟 20km/h、详情/历史标记、HC 跳过）+ GPS 后台持续记录桥接（原生前台服务，插件待接入）；v1.7.17：原生 App 环境自动隐藏模拟状态栏、内容上移交还系统状态栏（方案B，网页版不受影响）；v1.7.16：关于弹层开发者名改 le3321；应用图标内嵌 data URI 修复静态部署不显示；v1.7.15：等级 LV.1-9 不补零 + Health Connect 真实步数桥接（原生环境，网页版不受影响）；v1.7.14：等级徽标不补零——等级为 0 时显示 LV. 0，其余等级保持两位补零；v1.7.13：开始记录字号回调——text-2xl（24px）反馈太大，适当调小为 text-xl（20px）；v1.7.12：开始记录按钮文案调整——删除英文小标 READY WHEN YOU ARE，「开始记录」字号升为 text-2xl（24px）；v1.7.11：备源升级为准确步行路网——备源由 OSRM 演示服务器（驾车路网、距离近似）换为 Valhalla 公共实例（FOSSGIS 运营、独立主机、costing=pedestrian 真步行路网），请求改 POST JSON、响应按 polyline 解码，接管后路径与距离均为准确步行口径；v1.7.10：选点路线备用路线源——主源（OSRM 官方步行实例）失败重试时自动轮换到备源（OSRM 演示服务器、独立主机、驾车路网近似步行距离），主源故障不再直接退化为直线；v1.7.9：选点路线真实路径增强——OSRM 步行路网请求发起即显示「正在获取路线…」、8s 超时中止、失败自动重试 2 次（间隔 2.5s）、重试耗尽保持直线回退并标注「路线获取失败」，成功后照常画真实路径并自动填全长；v1.7.8：个人卡删除「MEMBER NO. 0182」装饰小标（假编号无数据对应，资历由下方「第 N 天」表达），同步清理两处专属 CSS；v1.7.7：地图选点期间就绪弹层暂时隐藏——设置起点终点进入地图选点时 ready-sheet 暂时消失避免遮挡地图，退出选点（选完图钉/取消/Esc）即恢复；v1.7.6：轨迹页底部文案简化——「THAT'S ALL FOR NOW · KEEP WALKING」改为「KEEP WALKING」；v1.7.5：主色选择入口收敛到色板——删除设置页「纯白主色」行，点击色板中已激活的纯白色块直接弹出主色选择弹层（从其它主题第一次点纯白仍是切换主题）；v1.7.4：排序弹层方向提示随排序依据联动——「按距离」时方向按钮文案改「倒序（最远在前）/正序（最近在前）」，「按时间」保持「最新/最早在前」，切换依据即时刷新、弹层打开时按当前依据渲染；v1.7.3：累计数据卡风格与统计页其它卡片统一——改用标准 card 底与 daily-head 标题结构（eyebrow「ALL TIME」+ h3「累计数据」），移除深绿渐变底、等高线装饰与专属文字色，改标准 ink/muted/faint；v1.7.2：修复轨迹列表「按时间」排序——此前倒序直接沿用加载顺序（重载后最旧在前、演示轨迹错位、正序整体颠倒），改为按记录时间戳真实比较；「按距离」加时间稳定次序；v1.7.1：统计卡片管理增强——弹层内行支持长按拖拽重排（序号把手、其余行让位动画、边界钳制），新增「添加已隐藏的卡片」chips 入口可点选恢复显示；v1.7.0：统计页卡片自定义——页头新增编辑入口，弹层内可上移/下移排序、开关显示/隐藏（至少保留一张）、恢复默认，配置存 shanxing:statCards，重排按 data-stat-card 插到引言前；v1.6.9：分享海报中文名——保存 PNG 改「山行-海报-记录ID.png」、系统分享文件改「山行-海报.png」，至此导出文件全部中文化；v1.6.8：导出文件中文名——CSV 改「山行-记录导出-年月日-时分.csv」、JSON 云端备份改「山行-备份-年月日-时分.json」，云端识别与回退校验兼容旧英文命名；v1.6.7：纯白主色改为弹层选择——设置行改为带箭头点击行，点开底部弹层六选一（大色点 + 名称 + 选中勾），选择即时生效自动保存；v1.6.6：纯白主色可选——纯白主题下新增「纯白主色」选择行，标准蓝 + 雾霾蓝/薄荷/藕紫/杏色/暖灰五种淡色（浅底深字按钮 + 中饱和线条，夜间同思路），选择持久化且仅纯白主题生效；v1.6.5：留白主题重构为「纯白」——普通应用白色模式（白底、中性灰阶、标准蓝主色 #2563EB，昼夜主色一致）；v1.6.4：今日已走随目标类型切换口径——步数目标显示「今日已走 N 步 · 周目标 N%」；v1.6.3：轨迹列表刷新闪烁消除——渲染签名对比，内容真变化才重建 DOM 重放入场动画；v1.6.2：统计页边距重设——best-card 补内边距与卡片间距、award-card 补卡片间距，整页 13px 节奏统一；v1.6.1：个人最佳卡防溢出（minmax(0,1fr) 网格轨道 + min-width:0 + 标签省略 + 数值可换行）；v1.6.0：①统计页个人最佳卡（6 项纪录）②月/年目标独立设置（默认跟随周目标放大）③记录 CSV 导出 ④GPS 真实轨迹存档与详情页真实渲染    */
+  const APP_VERSION = '1.7.41'; /* v1.7.41：统计页新增四张卡——每日步数（本周每日步数柱状图+合计，步数目标时与目标卡同口径联动）、配速走势（近 10 次 ≥0.5 km 记录的平均配速变化，柱高按速度归一、越高越快）、运动类型（步行 vs 骑行的次数与里程占比，固定按全部记录统计、不受运动筛选影响）、活跃时段（按记录出发时间分清晨/上午/午后/傍晚/夜间 5 桶分布，口径随运动筛选联动）——四卡全部入卡片管理体系（老配置自动追加新 key，可排序可隐藏）。v1.7.40：删除设置页「单位与显示」装饰行（Visual Edit 评论「这里有什么用？」→ 核实为纯装饰：点击仅弹 toast、meta「公里 · 千卡」为写死文案，全应用并无单位切换逻辑；经用户确认直接删除）——一并清理唯一引用的 data-setting 通用 toast 绑定与 #i-ruler 图标 symbol。v1.7.39：提醒与通知改为弹窗式设置（Visual Edit 反馈「与其他选项一样做成弹窗」）——设置页改为带箭头可点击行（meta 显示「每天 HH:MM」或「已关闭」），点击打开提醒设置弹窗 notifyLayer（总开关 + 每日时间行 + 周目标开关三行；时间为行内输入框即改即存，原独立时间弹层移除；总开关关闭时两子行置灰不可点）；设置页不再直接暴露子行。v1.7.38：提醒与通知真实化（用户选定「两种提醒都要」）——主开关持久化（shanxing:notify，关闭时隐藏子行）；新增「每日健走提醒」行+时间选择弹层（shanxing:notifyTime，默认 19:30，到点且当天未提醒则应用内提醒+已授权 Web 通知）与「周目标进度提醒」开关（shanxing:notifyGoal，周日 10 点后检查本周缺口未达标则提醒补量）；APK 端检测 Capacitor LocalNotifications 插件自动注册每日系统本地通知（未装插件静默跳过）；提醒引擎 notifyTick 参数化 now 便于测试注入。v1.7.37：完成弹层自动保存（Visual Edit 反馈「自动保存记录，只有点击放弃按钮时不保存，点击保存或其他地方退出都自动保存；保存后停留在记录界面」）——保存主体抽成共享函数 finishSave(fromClose)：点「保存这段路」、点 X、按 Esc 都自动保存记录，仅「放弃本次记录」按钮不保存；保存后不再跳「轨迹」页、留在「记录」页（补刷今日已走/称号进度/目标卡），轨迹页数据仍预刷新。v1.7.36：热力图方块补描线 border:1px solid var(--line)（无记录格保持白色，方块在浅色卡底上仍可辨；线色随主题与日夜间自适应；图例同步；占位空格不描线）——Visual Edit 反馈「方块描线还是要的」。v1.7.35：无记录格与图例 l0 底色改白色（不再随主题色显示颜色；夜间用中性白微底 rgba(255,255,255,.07) 深底可辨不刺眼）——Visual Edit 反馈「无时显示白色即可，不显示颜色」，回调 v1.7.33 的「l0 跟随主题色」；v1.7.34：热力图月块悬浮明细 + 年度运动看板 + 纯白主色热力联动（用户反馈三处）——①热力图月块悬浮浮出该月汇总明细（活跃天数/次数/里程/时长；fixed 气泡不被滚动容器裁切、拖拽中不弹）②「年度对比」卡新增「年度看板」按钮——弹层内本年逐月里程柱状图 + 6 项年度总览瓦片（总里程/总次数/总时长/总消耗/最远单次/累计步数，口径随运动筛选联动）③纯白主题六种主色下「活跃热力」色阶同步跟随（10 个 accent 变量块各补 --theme-heat-rgb=brand-rgb，修复 v1.7.32 热力基色按主题定义、未纳入 accent 覆盖的遗留）；v1.7.33：热力图日历式布局与滑动修复 + 年度对比卡（Visual Edit 反馈）——①热力图改日历式月块：每月独立 mini 日历（月标签居中 + 一~日星期头 + 周一到周日一行 7 格），12 个月横排②拖拽滑动 + 滚轮横滚（修复「还是无法滑动」：overflow 滚动本身正常，但桌面预览鼠标既拖不动、滚轮又是纵向的）③图例整排跟随主题色（l0 无记录底色也换主题色低透明度，与 l1-l4 组成完整梯度）④统计页新增「年度对比」卡（本年至今 vs 去年同期：里程/次数/消耗，随筛选联动，入卡片管理）；v1.7.32：热力图月块化与深基色（Visual Edit 反馈）——①每月数据从 1 号开始到月末结束、跨月日期不再借位补格（月块化网格：每月独立成块，1 号按真实星期行落位，1 号前/月末后的余位留空；月界空列隔离保留）②色阶换深色基色 --heat-rgb（此前两轮仅调透明度仍反馈「太淡」，根因是默认主题基色 #DFF59B 过浅、alpha 到 1.0 也只是粉彩；各主题取 track/mid 同系深色，图例同步）；v1.7.31：热力图第二轮可读性（Visual Edit 反馈）——①色阶再加深（.34/.55/.75/.96 → .5/.68/.84/1.0，图例同步）+ 图例色块 9→11px（「根本看不清，多加重」）②窗口改月对齐：恰好 12 个月（去年下月→本月，如 10 月显示 25年11月-26年10月），每年首月标签带「YY年」前缀跨年可辨、月初不再出现 13 个标签（「保留12个月，跨年也不消失」）；v1.7.30：热力图可读性增强（Visual Edit 反馈三处）——①月界空列隔离（每月之间留一列空白格，月份间隔可辨）②色阶加重（.22/.42/.68/.92 → .34/.55/.75/.96，图例同步）③今日格描边改内嵌（outline-offset -2px，不再被滚动容器边缘裁切）；v1.7.29：①GPS 轨迹详情地图升级为高德瓦片真实历史地图（轨迹 GCJ-02 与瓦片坐标系对齐，打开详情后异步升级、离线或加载失败保持示意图）②真实每公里分段配速（轨迹点带采集时间戳，按 haversine 里程插值每公里边界；老记录/手动记录回退平均配速估算并显式标注）③示意图底图标签诚实化（装饰街道名改「路线示意图」）；v1.7.28：①统计页新增「活跃热力」卡（GitHub 风格全年 53 周×7 日热力图，按当日里程 5 档着色、今日描边高亮、口径随运动筛选联动、入卡片管理体系）②周总结分享海报（热力图卡「周报海报」按钮一键生成本周总结图：合计里程/次数/时长/消耗、最远一天、周目标达成率，复用海报弹层与保存链）；v1.7.27：删除「我的」页累计数据区的口径小标签（Visual Edit 反馈，仅保留统计页累计卡/月度对比卡两枚）；v1.7.26：筛选口径小标签常显——全部口径也显示「全部」（累计卡/月度卡/我的页三处，用户反馈 v1.7.25 的「全量时隐藏」改为常显）；v1.7.25：①筛选口径小标签——非全量时统计页累计卡/月度对比卡头部与我的页累计区显示当前口径 ②统计页新增「月度对比」卡（本月 vs 上月：里程/次数/消耗，随筛选联动，入卡片管理可排序/隐藏）；v1.7.24：我的页「累计数据」区头部新增运动类型单按钮——.cum-side 右侧组（起始日期+按钮）与轨迹/统计页三处联动，累计数据随所选类型即时重算；v1.7.23：轨迹页运动类型单按钮移入筛选行内右下角（随行换行落第二行右缘）；v1.7.22：运动类型切换改为单按钮循环——全部→步行→骑行→全部，轨迹页与统计页页头各一枚，非全量时主题色高亮；v1.7.20：统计页页头新增「全部/步行/骑行」切换按钮（与轨迹/我的页联动，复用全局 sportFilter）；v1.7.19：轨迹页运动类型筛选+统计/我的页数据联动；v1.7.18：骑行模式（chips 切换、不计步、热量 28 kcal/km、模拟 20km/h、详情/历史标记、HC 跳过）+ GPS 后台持续记录桥接（原生前台服务，插件待接入）；v1.7.17：原生 App 环境自动隐藏模拟状态栏、内容上移交还系统状态栏（方案B，网页版不受影响）；v1.7.16：关于弹层开发者名改 le3321；应用图标内嵌 data URI 修复静态部署不显示；v1.7.15：等级 LV.1-9 不补零 + Health Connect 真实步数桥接（原生环境，网页版不受影响）；v1.7.14：等级徽标不补零——等级为 0 时显示 LV. 0，其余等级保持两位补零；v1.7.13：开始记录字号回调——text-2xl（24px）反馈太大，适当调小为 text-xl（20px）；v1.7.12：开始记录按钮文案调整——删除英文小标 READY WHEN YOU ARE，「开始记录」字号升为 text-2xl（24px）；v1.7.11：备源升级为准确步行路网——备源由 OSRM 演示服务器（驾车路网、距离近似）换为 Valhalla 公共实例（FOSSGIS 运营、独立主机、costing=pedestrian 真步行路网），请求改 POST JSON、响应按 polyline 解码，接管后路径与距离均为准确步行口径；v1.7.10：选点路线备用路线源——主源（OSRM 官方步行实例）失败重试时自动轮换到备源（OSRM 演示服务器、独立主机、驾车路网近似步行距离），主源故障不再直接退化为直线；v1.7.9：选点路线真实路径增强——OSRM 步行路网请求发起即显示「正在获取路线…」、8s 超时中止、失败自动重试 2 次（间隔 2.5s）、重试耗尽保持直线回退并标注「路线获取失败」，成功后照常画真实路径并自动填全长；v1.7.8：个人卡删除「MEMBER NO. 0182」装饰小标（假编号无数据对应，资历由下方「第 N 天」表达），同步清理两处专属 CSS；v1.7.7：地图选点期间就绪弹层暂时隐藏——设置起点终点进入地图选点时 ready-sheet 暂时消失避免遮挡地图，退出选点（选完图钉/取消/Esc）即恢复；v1.7.6：轨迹页底部文案简化——「THAT'S ALL FOR NOW · KEEP WALKING」改为「KEEP WALKING」；v1.7.5：主色选择入口收敛到色板——删除设置页「纯白主色」行，点击色板中已激活的纯白色块直接弹出主色选择弹层（从其它主题第一次点纯白仍是切换主题）；v1.7.4：排序弹层方向提示随排序依据联动——「按距离」时方向按钮文案改「倒序（最远在前）/正序（最近在前）」，「按时间」保持「最新/最早在前」，切换依据即时刷新、弹层打开时按当前依据渲染；v1.7.3：累计数据卡风格与统计页其它卡片统一——改用标准 card 底与 daily-head 标题结构（eyebrow「ALL TIME」+ h3「累计数据」），移除深绿渐变底、等高线装饰与专属文字色，改标准 ink/muted/faint；v1.7.2：修复轨迹列表「按时间」排序——此前倒序直接沿用加载顺序（重载后最旧在前、演示轨迹错位、正序整体颠倒），改为按记录时间戳真实比较；「按距离」加时间稳定次序；v1.7.1：统计卡片管理增强——弹层内行支持长按拖拽重排（序号把手、其余行让位动画、边界钳制），新增「添加已隐藏的卡片」chips 入口可点选恢复显示；v1.7.0：统计页卡片自定义——页头新增编辑入口，弹层内可上移/下移排序、开关显示/隐藏（至少保留一张）、恢复默认，配置存 shanxing:statCards，重排按 data-stat-card 插到引言前；v1.6.9：分享海报中文名——保存 PNG 改「山行-海报-记录ID.png」、系统分享文件改「山行-海报.png」，至此导出文件全部中文化；v1.6.8：导出文件中文名——CSV 改「山行-记录导出-年月日-时分.csv」、JSON 云端备份改「山行-备份-年月日-时分.json」，云端识别与回退校验兼容旧英文命名；v1.6.7：纯白主色改为弹层选择——设置行改为带箭头点击行，点开底部弹层六选一（大色点 + 名称 + 选中勾），选择即时生效自动保存；v1.6.6：纯白主色可选——纯白主题下新增「纯白主色」选择行，标准蓝 + 雾霾蓝/薄荷/藕紫/杏色/暖灰五种淡色（浅底深字按钮 + 中饱和线条，夜间同思路），选择持久化且仅纯白主题生效；v1.6.5：留白主题重构为「纯白」——普通应用白色模式（白底、中性灰阶、标准蓝主色 #2563EB，昼夜主色一致）；v1.6.4：今日已走随目标类型切换口径——步数目标显示「今日已走 N 步 · 周目标 N%」；v1.6.3：轨迹列表刷新闪烁消除——渲染签名对比，内容真变化才重建 DOM 重放入场动画；v1.6.2：统计页边距重设——best-card 补内边距与卡片间距、award-card 补卡片间距，整页 13px 节奏统一；v1.6.1：个人最佳卡防溢出（minmax(0,1fr) 网格轨道 + min-width:0 + 标签省略 + 数值可换行）；v1.6.0：①统计页个人最佳卡（6 项纪录）②月/年目标独立设置（默认跟随周目标放大）③记录 CSV 导出 ④GPS 真实轨迹存档与详情页真实渲染    */
   {
     const m = $('#aboutSettingMeta');
     if (m) m.textContent = 'v' + APP_VERSION;
@@ -7806,6 +7883,140 @@
     wrap.addEventListener('pointerdown', () => { if (cur) hide(); }); /* 触摸/拖拽起点先收起，避免气泡跟着拖动 */
   })()
 
+  /* ---------------- v1.7.41：统计页四张新卡（每日步数 / 配速走势 / 运动类型 / 活跃时段） ---------------- */
+  function recordHourOf(r) { /* v1.7.41：记录出发小时——优先 time 字段（HH:MM），缺失回退记录时间戳 */
+    if (r && typeof r.time === 'string' && /^\d{1,2}:\d{2}/.test(r.time)) return parseInt(r.time, 10);
+    return new Date(recordTsOf(r)).getHours();
+  }
+  function renderDailySteps() { /* v1.7.41：每日步数卡——本周（周一起）每日步数柱状图 + 合计；步数求和与目标卡同口径（activeRecords + r.steps||0）；目标类型为步数时展示周目标完成百分比 */
+    const barsEl = $('#dsBars'); if (!barsEl) return;
+    const now = new Date();
+    const ws = weekStartTs(now);
+    const DAY_CN = ['一', '二', '三', '四', '五', '六', '日'];
+    const recs = activeRecords().filter(r => { const t = recordTsOf(r); return t >= ws && t < ws + 7 * 864e5; });
+    const data = [];
+    for (let i = 0; i < 7; i++) {
+      const from = ws + i * 864e5;
+      data.push(recs.reduce((s, r) => { const t = recordTsOf(r); return t >= from && t < from + 864e5 ? s + (r.steps || 0) : s; }, 0));
+    }
+    const total = data.reduce((a, b) => a + b, 0);
+    const max = Math.max.apply(null, data.concat([1]));
+    barsEl.style.gridTemplateColumns = 'repeat(7,1fr)';
+    barsEl.innerHTML = data.map((v, i) => `
+      <div class="bar-col${i === (now.getDay() + 6) % 7 ? ' today' : ''}" style="--h:${v > 0 ? Math.round(v / max * 87) : 0}%">
+        <span class="bar-value">${v > 0 ? (v >= 10000 ? (v / 10000).toFixed(1) + '万' : fmtNum(Math.round(v))) : ''}</span>
+        <div class="bar-track"><div class="bar-fill"></div></div>
+        <span class="bar-day">${DAY_CN[i]}</span>
+      </div>`).join('');
+    const set = (id, txt) => { const el = $('#' + id); if (el) el.textContent = txt; };
+    set('dsTotal', fmtNum(Math.round(total)));
+    set('dsRange', fmtRangeDate(ws) + ' — ' + fmtRangeDate(ws + 6 * 864e5));
+    const noteEl = $('#dsNote');
+    if (noteEl) {
+      if (profileData.goal.type === 'steps') {
+        const target = Number(profileData.goal.steps) || 0;
+        const pct = target > 0 ? Math.min(999, Math.round(total / target * 100)) : 0;
+        noteEl.textContent = `周目标 ${fmtNum(target)} 步 · 已完成 ${pct}%（与目标卡同口径）`;
+      } else {
+        noteEl.textContent = `日均 ${fmtNum(Math.round(total / 7))} 步 · 目标类型为里程，未启用步数目标`;
+      }
+    }
+  }
+  function renderPaceTrend() { /* v1.7.41：配速走势卡——近 10 次 ≥0.5 km 记录的平均配速（每公里用时）；柱高按速度归一（越高越快），对比前后半段判定变快/变慢/持平 */
+    const barsEl = $('#paceBars'); if (!barsEl) return;
+    const set = (id, txt) => { const el = $('#' + id); if (el) el.textContent = txt; };
+    const recs = activeRecords()
+      .filter(r => (r.distance || 0) >= 0.5 && (r.durationSec || 0) > 0)
+      .sort((a, b) => recordTsOf(a) - recordTsOf(b)); /* 旧→新，从左往右看趋势（与最快配速同 0.5 km 门限） */
+    const last = recs.slice(-10);
+    if (!last.length) {
+      barsEl.style.gridTemplateColumns = 'none';
+      barsEl.innerHTML = '<p class="best-empty">还没有 ≥0.5 km 的记录</p>';
+      set('paceAvg', '—'); set('paceCount', '近 10 次');
+      set('paceNote', '配速 = 每公里用时，保存 ≥0.5 km 的记录后可看走势');
+      return;
+    }
+    const paceOf = r => paceSeconds(r.durationSec, r.distance);
+    const avg = last.reduce((s, r) => s + paceOf(r), 0) / last.length;
+    const speeds = last.map(r => r.distance / (r.durationSec || 1) * 3600);
+    const maxSp = Math.max.apply(null, speeds), minSp = Math.min.apply(null, speeds);
+    barsEl.style.gridTemplateColumns = `repeat(${last.length},1fr)`;
+    barsEl.innerHTML = last.map((r, i) => {
+      const h = maxSp > minSp ? 12 + Math.round((speeds[i] - minSp) / (maxSp - minSp) * 75) : 50; /* 高低有差时映射到 12%–87%，持平时居中 */
+      const d = new Date(recordTsOf(r));
+      return `<div class="bar-col${i === last.length - 1 ? ' today' : ''}" style="--h:${h}%">
+        <span class="bar-value">${fmtPaceSeconds(paceOf(r))}</span>
+        <div class="bar-track"><div class="bar-fill"></div></div>
+        <span class="bar-day">${d.getMonth() + 1}.${d.getDate()}</span>
+      </div>`;
+    }).join('');
+    set('paceAvg', fmtPaceSeconds(avg));
+    set('paceCount', `近 ${last.length} 次`);
+    let trend = '持平';
+    if (last.length >= 4) {
+      const half = Math.floor(last.length / 2);
+      const early = last.slice(0, half).reduce((s, r) => s + paceOf(r), 0) / half;
+      const recent = last.slice(-half).reduce((s, r) => s + paceOf(r), 0) / half;
+      trend = recent < early - 3 ? '变快' : recent > early + 3 ? '变慢' : '持平'; /* 前后半段均配速差 >3 秒/km 才判趋势 */
+    }
+    set('paceNote', `近期趋势：${trend} · 柱越高走得越快（≥0.5 km 口径，随运动筛选）`);
+  }
+  function renderSportRatio() { /* v1.7.41：运动类型占比卡——步行 vs 骑行的次数、里程占比；固定按全部 records 统计（受运动筛选时占比恒为 100%，故不受筛选影响） */
+    const rowsEl = $('#srRows'); if (!rowsEl) return;
+    const noteEl = $('#srNote');
+    const walk = records.filter(r => sportOf(r) === 'walk');
+    const ride = records.filter(r => sportOf(r) === 'ride');
+    const n = walk.length + ride.length;
+    if (!n) {
+      rowsEl.innerHTML = '<p class="best-empty">还没有记录，出门走走后可看类型占比</p>';
+      if (noteEl) noteEl.textContent = '步行与骑行的次数、里程占比';
+      return;
+    }
+    const wk = walk.reduce((s, r) => s + (r.distance || 0), 0);
+    const rk = ride.reduce((s, r) => s + (r.distance || 0), 0);
+    const pct = (a, b) => b > 0 ? Math.round(a / b * 100) : 0;
+    const row = (label, wv, rv, fmt, unit) => `
+      <div class="sr-row">
+        <div class="sr-head"><span>${label}占比</span><em>步行 ${fmt(wv)}${unit}（${pct(wv, wv + rv)}%） · 骑行 ${fmt(rv)}${unit}（${pct(rv, wv + rv)}%）</em></div>
+        <div class="sr-track"><i class="sr-walk" style="width:${pct(wv, wv + rv)}%"></i><i class="sr-ride" style="width:${pct(rv, wv + rv)}%"></i></div>
+      </div>`;
+    rowsEl.innerHTML = row('次数', walk.length, ride.length, v => String(v), ' 次') + row('里程', wk, rk, v => v.toFixed(1), ' km');
+    if (noteEl) noteEl.textContent = `共 ${n} 条记录 · 步行 ${pct(walk.length, n)}% / 骑行 ${pct(ride.length, n)}% · 按全部记录统计，不受筛选影响`;
+  }
+  function renderDayParts() { /* v1.7.41：活跃时段卡——按记录出发小时分 5 个时段（清晨 5-9 / 上午 9-12 / 午后 12-17 / 傍晚 17-21 / 夜间 21-次日 5）统计次数分布，口径随运动筛选联动 */
+    const rowsEl = $('#dpRows'); if (!rowsEl) return;
+    const noteEl = $('#dpNote');
+    const BUCKETS = [
+      { name: '清晨', from: 5, to: 9 },
+      { name: '上午', from: 9, to: 12 },
+      { name: '午后', from: 12, to: 17 },
+      { name: '傍晚', from: 17, to: 21 },
+      { name: '夜间', from: 21, to: 29 } /* 21–24 与次日 0–5 合并（0–5 点折算成 24+h） */
+    ];
+    const counts = new Array(BUCKETS.length).fill(0);
+    let total = 0;
+    activeRecords().forEach(r => {
+      let h = recordHourOf(r);
+      if (h < 5) h += 24; /* 0–5 点归入前一天的「夜间」桶 */
+      const b = BUCKETS.findIndex(k => h >= k.from && h < k.to);
+      if (b > -1) { counts[b]++; total++; }
+    });
+    const max = Math.max.apply(null, counts.concat([1]));
+    rowsEl.innerHTML = BUCKETS.map((k, i) => `
+      <div class="dp-row">
+        <span class="dp-label">${k.name}</span>
+        <div class="dp-track"><i style="width:${counts[i] > 0 ? Math.max(8, Math.round(counts[i] / max * 100)) : 0}%"></i></div>
+        <strong class="dp-val">${counts[i] > 0 ? counts[i] + ' 次' : '—'}</strong>
+      </div>`).join('');
+    if (noteEl) {
+      if (!total) noteEl.textContent = '保存记录后可看你的活跃时段分布';
+      else {
+        const top = counts.indexOf(max);
+        noteEl.textContent = `你最常在${BUCKETS[top].name}出门 · 共 ${total} 次记录`;
+      }
+    }
+  }
+
   function renderStats() {
     const labelEl = $('#periodLabel');
     if (labelEl) labelEl.textContent = PERIOD_LABEL[statsPeriod];
@@ -7839,6 +8050,10 @@
     renderMonthCompare(); /* v1.7.25：月度对比卡随统计页刷新与运动筛选联动（applySportFilter 经 renderStats 触发） */
     renderYearCompare(); /* v1.7.33：年度对比卡随统计页刷新与运动筛选联动 */
     renderHeatmap(); /* v1.7.28：活跃热力图随统计页刷新与运动筛选联动（applySportFilter 经 renderStats 触发） */
+    renderDailySteps(); /* v1.7.41：四张新卡随统计页刷新与运动筛选联动（applySportFilter / 保存后重进统计页经 renderStats 触发） */
+    renderPaceTrend();
+    renderSportRatio();
+    renderDayParts();
   }
 
   /* ---------------- cumulative stats (v1.5.26) ----------------
@@ -9721,7 +9936,12 @@ function updateLevelUI() {
     { key: 'monthon', name: '月度对比' },
     { key: 'yearon', name: '年度对比' },
     { key: 'heatmap', name: '活跃热力' },
-    { key: 'cumulative', name: '累计数据' }
+    { key: 'cumulative', name: '累计数据' },
+    /* v1.7.41：四张新卡——追加在数组尾部，老用户已存配置经 loadStatCardCfg 自动补上这几个 key（顺序也在最后），新用户默认顺序与其一致 */
+    { key: 'dailysteps', name: '每日步数' },
+    { key: 'pace', name: '配速走势' },
+    { key: 'sportratio', name: '运动类型' },
+    { key: 'daypart', name: '活跃时段' }
   ];
   const STAT_CARDS_KEY = 'shanxing:statCards';
   function loadStatCardCfg() {
