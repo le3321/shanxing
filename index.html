@@ -16,7 +16,8 @@
     '--theme-mid', '--theme-mid-dark', '--theme-moss', '--theme-moss-dark',
     '--theme-accent', '--theme-accent-2', '--theme-accent-ink', '--theme-accent-rgb',
     '--theme-deep-1', '--theme-deep-2', '--theme-deep-3',
-    '--theme-track', '--theme-planned'
+    '--theme-track', '--theme-planned',
+    '--theme-heat-rgb'
   ];
   const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
   const toHex = v => clamp(Math.round(v), 0, 255).toString(16).padStart(2, '0');
@@ -103,6 +104,7 @@
       deep2: hslToHex(h, s, .11),
       deep3: hslToHex(h, s, .07),
       track: hslToHex(h, s, .34),
+      heatRgb: rgbString(mid), /* v1.7.32：自定义主题热力基色取 mid（L .42-.55，昼夜都可辨） */
       planned: hslToHex(h, Math.min(s, .45), .54)
     };
   }
@@ -127,7 +129,8 @@
       '--theme-deep-2': palette.deep2,
       '--theme-deep-3': palette.deep3,
       '--theme-track': palette.track,
-      '--theme-planned': palette.planned
+      '--theme-planned': palette.planned,
+      '--theme-heat-rgb': palette.heatRgb
     };
     Object.entries(values).forEach(([key, value]) => root.style.setProperty(key, value));
     root.style.setProperty('--custom-picked', seed.startsWith('#') ? seed : `#${seed}`);
@@ -199,6 +202,7 @@
     --theme-deep-2:#123725;
     --theme-deep-3:#0D2A1C;
     --theme-track:#2D704E;
+    --theme-heat-rgb:45,112,78; /* v1.7.32：热力图色阶基色（track 同系深绿，浅底可辨） */
     --theme-planned:#6E9177;
 
     --bg:color-mix(in srgb, var(--theme-accent) 17%, #F8F6EF);
@@ -215,6 +219,7 @@
     --lime-deep:var(--theme-accent-2);
     --accent-ink:var(--theme-accent-ink);
     --accent-rgb:var(--theme-accent-rgb);
+    --heat-rgb:var(--theme-heat-rgb); /* v1.7.32：热力图专用基色映射（accent-rgb 是浅粉彩基色、被 pill/tile 等大量组件引用不可动，热力另立深色基色） */
     --brand-rgb:var(--theme-brand-rgb);
     --deep-1:var(--theme-deep-1);
     --deep-2:var(--theme-deep-2);
@@ -257,6 +262,7 @@
     --theme-deep-2:#1E3A8A;
     --theme-deep-3:#172554;
     --theme-track:#2563EB;
+    --theme-heat-rgb:37,99,235; /* v1.7.32：纯白热力基色（brand 蓝） */
     --theme-planned:#93C5FD;
     --bg:#FFFFFF;
     --surface:#FFFFFF;
@@ -337,6 +343,7 @@
     --theme-deep-2:#191D1B;
     --theme-deep-3:#131615;
     --theme-track:#4C82F4;
+    --theme-heat-rgb:108,155,246; /* v1.7.32：纯白夜间热力基色（mid-dark 蓝亮于 track，深底可辨） */
     --theme-planned:#3D5A80;
     --bg:#101312;
     --surface:#171B19;
@@ -384,6 +391,7 @@
     --theme-accent:#E3ECF7; --theme-accent-2:#8FAED6; --theme-accent-ink:#2E4A73; --theme-accent-rgb:227,236,247;
     --theme-deep-1:#2E4A73; --theme-deep-2:#2E4A73; --theme-deep-3:#2E4A73;
     --theme-track:#5B87BD; --theme-planned:#8FAED6;
+    --theme-heat-rgb:91,135,189; /* v1.7.34：热力基色随纯白主色联动（与 brand 同色，特异性 (0,3,1) 覆盖主题基块） */
   }
   html[data-theme="white"][data-accent="mistblue"][data-mode="light"] .start-btn{background:#E3ECF7;color:#2E4A73;border:1px solid rgba(46,74,115,.14);box-shadow:0 10px 22px rgba(46,74,115,.08)}
   html[data-theme="white"][data-accent="mistblue"][data-mode="light"] .start-play{color:#2E4A73}
@@ -419,6 +427,7 @@
     --theme-mid:#8FAED6; --theme-mid-dark:#E3ECF7; --theme-moss:#8FAED6; --theme-moss-dark:#8FAED6;
     --theme-accent:#E3ECF7; --theme-accent-2:#E3ECF7; --theme-accent-ink:#2E4A73; --theme-accent-rgb:227,236,247;
     --theme-track:#8FAED6; --theme-planned:#2E4A73;
+    --theme-heat-rgb:143,174,214; /* v1.7.34：热力基色随纯白主色联动（与 brand 同色，特异性 (0,3,1) 覆盖主题基块） */
   }
   html[data-theme="white"][data-accent="mistblue"][data-mode="dark"] .start-btn{background:#E3ECF7;color:#2E4A73;box-shadow:0 12px 26px rgba(0,0,0,.34)}
   html[data-theme="white"][data-accent="mistblue"][data-mode="dark"] .start-play{color:#2E4A73}
@@ -435,6 +444,7 @@
     --theme-accent:#E0F5F0; --theme-accent-2:#7BCBBC; --theme-accent-ink:#1E6355; --theme-accent-rgb:224,245,240;
     --theme-deep-1:#1E6355; --theme-deep-2:#1E6355; --theme-deep-3:#1E6355;
     --theme-track:#2F9C87; --theme-planned:#7BCBBC;
+    --theme-heat-rgb:47,156,135; /* v1.7.34：热力基色随纯白主色联动（与 brand 同色，特异性 (0,3,1) 覆盖主题基块） */
   }
   html[data-theme="white"][data-accent="mint"][data-mode="light"] .start-btn{background:#E0F5F0;color:#1E6355;border:1px solid rgba(30,99,85,.14);box-shadow:0 10px 22px rgba(30,99,85,.08)}
   html[data-theme="white"][data-accent="mint"][data-mode="light"] .start-play{color:#1E6355}
@@ -470,6 +480,7 @@
     --theme-mid:#7BCBBC; --theme-mid-dark:#E0F5F0; --theme-moss:#7BCBBC; --theme-moss-dark:#7BCBBC;
     --theme-accent:#E0F5F0; --theme-accent-2:#E0F5F0; --theme-accent-ink:#1E6355; --theme-accent-rgb:224,245,240;
     --theme-track:#7BCBBC; --theme-planned:#1E6355;
+    --theme-heat-rgb:123,203,188; /* v1.7.34：热力基色随纯白主色联动（与 brand 同色，特异性 (0,3,1) 覆盖主题基块） */
   }
   html[data-theme="white"][data-accent="mint"][data-mode="dark"] .start-btn{background:#E0F5F0;color:#1E6355;box-shadow:0 12px 26px rgba(0,0,0,.34)}
   html[data-theme="white"][data-accent="mint"][data-mode="dark"] .start-play{color:#1E6355}
@@ -486,6 +497,7 @@
     --theme-accent:#E9E6F5; --theme-accent-2:#B0A5DA; --theme-accent-ink:#4E4680; --theme-accent-rgb:233,230,245;
     --theme-deep-1:#4E4680; --theme-deep-2:#4E4680; --theme-deep-3:#4E4680;
     --theme-track:#8F7FC4; --theme-planned:#B0A5DA;
+    --theme-heat-rgb:143,127,196; /* v1.7.34：热力基色随纯白主色联动（与 brand 同色，特异性 (0,3,1) 覆盖主题基块） */
   }
   html[data-theme="white"][data-accent="lilac"][data-mode="light"] .start-btn{background:#E9E6F5;color:#4E4680;border:1px solid rgba(78,70,128,.14);box-shadow:0 10px 22px rgba(78,70,128,.08)}
   html[data-theme="white"][data-accent="lilac"][data-mode="light"] .start-play{color:#4E4680}
@@ -521,6 +533,7 @@
     --theme-mid:#B0A5DA; --theme-mid-dark:#E9E6F5; --theme-moss:#B0A5DA; --theme-moss-dark:#B0A5DA;
     --theme-accent:#E9E6F5; --theme-accent-2:#E9E6F5; --theme-accent-ink:#4E4680; --theme-accent-rgb:233,230,245;
     --theme-track:#B0A5DA; --theme-planned:#4E4680;
+    --theme-heat-rgb:176,165,218; /* v1.7.34：热力基色随纯白主色联动（与 brand 同色，特异性 (0,3,1) 覆盖主题基块） */
   }
   html[data-theme="white"][data-accent="lilac"][data-mode="dark"] .start-btn{background:#E9E6F5;color:#4E4680;box-shadow:0 12px 26px rgba(0,0,0,.34)}
   html[data-theme="white"][data-accent="lilac"][data-mode="dark"] .start-play{color:#4E4680}
@@ -537,6 +550,7 @@
     --theme-accent:#F7EDE2; --theme-accent-2:#DFB687; --theme-accent-ink:#7A4E22; --theme-accent-rgb:247,237,226;
     --theme-deep-1:#7A4E22; --theme-deep-2:#7A4E22; --theme-deep-3:#7A4E22;
     --theme-track:#BE844A; --theme-planned:#DFB687;
+    --theme-heat-rgb:190,132,74; /* v1.7.34：热力基色随纯白主色联动（与 brand 同色，特异性 (0,3,1) 覆盖主题基块） */
   }
   html[data-theme="white"][data-accent="apricot"][data-mode="light"] .start-btn{background:#F7EDE2;color:#7A4E22;border:1px solid rgba(122,78,34,.14);box-shadow:0 10px 22px rgba(122,78,34,.08)}
   html[data-theme="white"][data-accent="apricot"][data-mode="light"] .start-play{color:#7A4E22}
@@ -572,6 +586,7 @@
     --theme-mid:#DFB687; --theme-mid-dark:#F7EDE2; --theme-moss:#DFB687; --theme-moss-dark:#DFB687;
     --theme-accent:#F7EDE2; --theme-accent-2:#F7EDE2; --theme-accent-ink:#7A4E22; --theme-accent-rgb:247,237,226;
     --theme-track:#DFB687; --theme-planned:#7A4E22;
+    --theme-heat-rgb:223,182,135; /* v1.7.34：热力基色随纯白主色联动（与 brand 同色，特异性 (0,3,1) 覆盖主题基块） */
   }
   html[data-theme="white"][data-accent="apricot"][data-mode="dark"] .start-btn{background:#F7EDE2;color:#7A4E22;box-shadow:0 12px 26px rgba(0,0,0,.34)}
   html[data-theme="white"][data-accent="apricot"][data-mode="dark"] .start-play{color:#7A4E22}
@@ -588,6 +603,7 @@
     --theme-accent:#ECECEA; --theme-accent-2:#B3B7B3; --theme-accent-ink:#3E423F; --theme-accent-rgb:236,236,234;
     --theme-deep-1:#3E423F; --theme-deep-2:#3E423F; --theme-deep-3:#3E423F;
     --theme-track:#8F948F; --theme-planned:#B3B7B3;
+    --theme-heat-rgb:143,148,143; /* v1.7.34：热力基色随纯白主色联动（与 brand 同色，特异性 (0,3,1) 覆盖主题基块） */
   }
   html[data-theme="white"][data-accent="warmgray"][data-mode="light"] .start-btn{background:#ECECEA;color:#3E423F;border:1px solid rgba(62,66,63,.14);box-shadow:0 10px 22px rgba(62,66,63,.08)}
   html[data-theme="white"][data-accent="warmgray"][data-mode="light"] .start-play{color:#3E423F}
@@ -623,6 +639,7 @@
     --theme-mid:#B3B7B3; --theme-mid-dark:#ECECEA; --theme-moss:#B3B7B3; --theme-moss-dark:#B3B7B3;
     --theme-accent:#ECECEA; --theme-accent-2:#ECECEA; --theme-accent-ink:#3E423F; --theme-accent-rgb:236,236,234;
     --theme-track:#B3B7B3; --theme-planned:#3E423F;
+    --theme-heat-rgb:179,183,179; /* v1.7.34：热力基色随纯白主色联动（与 brand 同色，特异性 (0,3,1) 覆盖主题基块） */
   }
   html[data-theme="white"][data-accent="warmgray"][data-mode="dark"] .start-btn{background:#ECECEA;color:#3E423F;box-shadow:0 12px 26px rgba(0,0,0,.34)}
   html[data-theme="white"][data-accent="warmgray"][data-mode="dark"] .start-play{color:#3E423F}
@@ -648,6 +665,7 @@
     --theme-deep-2:#33160F;
     --theme-deep-3:#240D08;
     --theme-track:#A45A39;
+    --theme-heat-rgb:164,90,57; /* v1.7.32：陶土热力基色（track 陶棕） */
     --theme-planned:#B88368;
   }
   html[data-theme="lake"]{
@@ -666,6 +684,7 @@
     --theme-deep-2:#11303F;
     --theme-deep-3:#0A222E;
     --theme-track:#2E7288;
+    --theme-heat-rgb:46,114,136; /* v1.7.32：湖泊热力基色（track 湖青） */
     --theme-planned:#78A6B2;
   }
   html[data-mode="dark"]{
@@ -696,7 +715,10 @@
     --switch-off:#3A473D;
     --toast-bg:rgba(242,240,228,.96);
     --toast-fg:#102018;
+    --theme-heat-rgb:90,148,112; /* v1.7.32：松林夜间热力基色（mid-dark 亮绿，深底可辨；特异性高于各主题日间块） */
   }
+  html[data-theme="clay"][data-mode="dark"]{--theme-heat-rgb:234,180,125} /* v1.7.32：陶土夜间热力基色（accent-2 亮陶色，须覆盖通用夜色的松林绿） */
+  html[data-theme="lake"][data-mode="dark"]{--theme-heat-rgb:137,211,220} /* v1.7.32：湖泊夜间热力基色（accent-2 亮湖青） */
   *{box-sizing:border-box}
   [hidden]{display:none!important}
   html,body{height:100%}
@@ -1454,7 +1476,18 @@
   .goal-sub-ctrl .switch{flex:none}
   .goal-sub-ctrl input[type="number"]{width:88px;height:32px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font-size:12px;font-weight:650;text-align:right;padding:0 10px;font-variant-numeric:tabular-nums}
   .goal-sub-unit{font-size:9.5px;color:var(--muted);font-weight:600;min-width:14px}
-  .stat-tile.accent{background:linear-gradient(145deg,#F1F7D9,#E6EFC6);border-color:rgba(99,132,62,.12)}
+  /* v1.7.38：提醒与通知 */
+.notify-list{margin-top:14px;display:flex;flex-direction:column}
+.notify-row{display:flex;align-items:center;gap:12px;padding:13px 4px;border-bottom:1px solid var(--line)}
+.notify-row:last-child{border-bottom:none}
+.notify-row .switch{flex:none}
+.notify-row .settings-arrow{flex:none;color:var(--faint)}
+.notify-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.notify-txt strong{font-size:13px;font-weight:700;color:var(--ink)}
+.notify-txt span{font-size:11px;color:var(--muted)}
+.notify-row.dim{opacity:.45;pointer-events:none} /* v1.7.39：总开关关闭时子行置灰不可点 */
+.notify-time-inline{flex:none;width:100px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font-size:14px;font-weight:650;text-align:center;font-variant-numeric:tabular-nums;padding:0 6px}
+.stat-tile.accent{background:linear-gradient(145deg,#F1F7D9,#E6EFC6);border-color:rgba(99,132,62,.12)}
   .stat-tile.accent .tile-icon{background:rgba(23,63,46,.1);color:var(--forest)}
 
   .settings-card{background:var(--surface);border:1px solid rgba(20,37,28,.06);border-radius:23px;overflow:hidden;box-shadow:0 10px 24px rgba(20,37,28,.045)}
@@ -1805,6 +1838,82 @@
   .mode-opt .icon{width:12px;height:12px;stroke-width:1.9}
   .mode-opt.active{background:var(--forest);color:#F8F7EE;box-shadow:0 3px 9px rgba(15,42,29,.15)}
   .mode-opt:active{transform:scale(.97)}
+  /* v1.7.18：运动模式切换（健走/骑行）——就绪弹层 */
+  .sport-switch{display:flex;gap:8px;margin:12px 0 0}
+  .sport-opt{flex:1;height:38px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:13px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.01em;cursor:pointer;transition:background .2s,color .2s,border-color .2s,box-shadow .2s}
+  .sport-opt.active{background:var(--forest);color:#F8F7EE;border-color:transparent;box-shadow:0 3px 9px rgba(15,42,29,.15)}
+  .sport-opt:active{transform:scale(.97)}
+  /* v1.7.22：运动类型切换改单按钮循环（全部→步行→骑行→全部）——替代 v1.7.19–v1.7.21 的三段 sf-switch 与页头 sf-head 胶囊组；轨迹页筛选行内右下角（v1.7.23 起）、统计页页头动作区与我的页累计数据区头部（v1.7.24 起）各一枚，按钮显示当前状态，非全量时主题色高亮提示已筛选（联动与持久化口径不变，仍走全局 sportFilter） */
+  .sf-cycle{height:34px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;border-radius:12px;border:1px solid var(--soft-line);background:var(--surface);color:var(--ink-soft);font-size:11px;font-weight:700;letter-spacing:.01em;cursor:pointer;transition:background .2s,color .2s,border-color .2s,box-shadow .2s}
+  .sf-cycle .icon{width:13px;height:13px;color:var(--muted);flex:none}
+  .sf-cycle:active{transform:scale(.97)}
+  .sf-cycle.filtered{background:rgba(var(--accent-rgb),.3);color:var(--accent-ink);border-color:transparent}
+  .sf-cycle.filtered .icon{color:var(--accent-ink)}
+  #historyScreen .sf-cycle{margin:0} /* v1.7.23：移入 filter-row 行内，不再需要独立行距 */
+  .cum-side{display:flex;align-items:center;gap:10px} /* v1.7.24：我的页「累计数据」区头右侧组（起始日期 + 运动类型单按钮） */
+  .cum-side .sf-cycle{flex:none}
+  .cum-side .sf-cycle .sf-cycle-label{font-size:11px;color:inherit;letter-spacing:.01em} /* 抵御 .section-head span 的 10px/muted 串染，标签样式与另两页一致 */
+  /* v1.7.25：筛选口径小标签——统计页累计卡/月度对比卡头部与我的页累计区，非全量时显示当前口径 */
+  .sport-pill{height:20px;padding:0 9px;border-radius:99px;display:inline-flex;align-items:center;background:rgba(var(--accent-rgb),.3);color:var(--accent-ink);font-size:9.5px;font-weight:720;letter-spacing:.02em;flex:none}
+  /* v1.7.25：月度对比卡——本月 vs 上月三行（里程/次数/消耗） */
+  .month-card{padding:18px 18px 14px;margin-top:13px}
+  .heatmap-card{padding:18px 18px 14px;margin-top:13px} /* v1.7.28：活跃热力卡，节奏与月度对比卡一致 */
+  .heat-btn{height:30px;padding:0 11px;display:inline-flex;align-items:center;gap:5px;border-radius:10px;border:1px solid var(--soft-line);background:var(--surface);color:var(--ink-soft);font-size:11px;font-weight:700;letter-spacing:.01em;cursor:pointer;flex:none}
+  .heat-btn .icon{width:13px;height:13px;color:var(--muted);flex:none}
+  .heat-scroll{margin-top:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none} /* v1.7.28：热力图横向滚动容器（53 列超宽），默认滚到本周 */
+  .heat-scroll::-webkit-scrollbar{display:none}
+  .heat-inner{width:max-content;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-user-drag:none} /* v1.7.33：热力图支持鼠标拖拽滑动（修复桌面预览无法滑动看历史数据）；触摸设备原生横滑不受影响 */
+  .heat-scroll.dragging .heat-inner{cursor:grabbing}
+  .heat-month{display:flex;flex-direction:column} /* v1.7.33：日历式月块——每月独立 mini 日历 */
+  .heat-mlabel{text-align:center;font-size:9px;color:var(--muted);white-space:nowrap;margin-bottom:4px} /* 月标签居中于月块 */
+  .heat-wd{display:grid;grid-template-columns:repeat(7,11px);gap:3px;margin-bottom:3px} /* 星期头：周一~周日 */
+  .heat-wd span{width:11px;font-size:8px;line-height:1;color:var(--faint);text-align:center}
+  .heat-mgrid{display:grid;grid-template-columns:repeat(7,11px);gap:3px} /* 日历式网格：每行 7 格（周一~周日），行=周 */
+  .heat-grid{display:flex;gap:16px} /* v1.7.33：改日历式月块横排容器（12 个月块，块间 16px 隔离） */
+  .heat-cell{width:11px;height:11px;border-radius:3px;background:#fff;border:1px solid var(--line)} /* v1.7.36：方块描线（Visual Edit 反馈「方块描线还是要的」），线色随主题/日夜间自适应 */ /* v1.7.35：无记录底色改白色、不再显示主题色（Visual Edit 反馈「无时显示白色即可，不显示颜色」，回调 v1.7.33 的跟随主题色）；l1-l4 色阶不变 */
+  html[data-mode="dark"] .heat-cell.l0{background:rgba(255,255,255,.07)} /* v1.7.35：夜间无记录格用中性白微底（深底上纯白刺眼，微白可辨且不带主题色） */
+  .heat-cell.empty{background:transparent;border:none} /* 本周未来日期留空 */
+  .heat-cell.l1{background:rgba(var(--heat-rgb),.5)} /* v1.7.32：色阶换深色基色 --heat-rgb（默认主题 45,112,78 深绿）——此前两轮仅调透明度仍反馈「太淡」，根因是基色 #DFF59B 过浅、alpha 到 1.0 也只是粉彩；阶梯 .5/.68/.84/1 保留 */
+  .heat-cell.l2{background:rgba(var(--heat-rgb),.68)}
+  .heat-cell.l3{background:rgba(var(--heat-rgb),.84)}
+  .heat-cell.l4{background:rgba(var(--heat-rgb),1)}
+  .heat-cell.today{outline:2px solid rgba(var(--accent-rgb),.95);outline-offset:-2px} /* v1.7.30：描边改内嵌——外扩描边会被滚动容器边缘裁掉（用户反馈今日格看不到） */
+  .heat-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
+  .heat-note{margin:0;font-size:9.5px;color:var(--faint);letter-spacing:.02em}
+  .heat-legend{display:inline-flex;align-items:center;gap:3px;font-size:9px;color:var(--faint);flex:none}
+  .heat-legend i{width:11px;height:11px;border-radius:3px;display:inline-block;background:#fff;border:1px solid var(--line)} /* v1.7.31：图例色块 9→11px 与单元格同尺寸；v1.7.35：l0 底色改白色与单元格同步（回调 v1.7.33 的跟随主题色） */
+  html[data-mode="dark"] .heat-legend i.l0{background:rgba(255,255,255,.07)} /* v1.7.35：夜间图例 l0 与单元格同步中性白微底 */
+  .heat-legend i.l1{background:rgba(var(--heat-rgb),.5)} /* v1.7.32：图例与单元格同换深基色 --heat-rgb */
+  .heat-legend i.l2{background:rgba(var(--heat-rgb),.68)}
+  .heat-legend i.l3{background:rgba(var(--heat-rgb),.84)}
+  .heat-legend i.l4{background:rgba(var(--heat-rgb),1)}
+  .heat-tip{position:fixed;z-index:90;padding:7px 11px;border-radius:10px;background:var(--toast-bg);color:var(--toast-fg);font-size:11px;font-weight:650;line-height:1.5;white-space:nowrap;box-shadow:0 8px 22px rgba(0,0,0,.22);pointer-events:none;opacity:0;transition:opacity .12s} /* v1.7.34：月块悬浮明细气泡——fixed 定位不被 .heat-scroll overflow 裁切；pointer-events:none 不挡拖拽；与 toast 同底色随昼夜 */
+  .heat-tip.show{opacity:1}
+  .head-actions{display:flex;align-items:center;gap:8px;flex:none} /* v1.7.34：卡片头右侧动作组（年度看板按钮 + 口径标签并排） */
+  .yb-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px} /* v1.7.34：年度看板总览瓦片 3×2 */
+  .yb-tile{border:1px solid var(--soft-line);border-radius:12px;padding:10px 10px 8px;min-width:0}
+  .yb-tile span{display:block;font-size:10px;color:var(--muted);white-space:nowrap;margin-bottom:3px}
+  .yb-tile strong{display:block;font-size:15px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .yb-tile small{font-size:9px;font-weight:700;color:var(--muted);margin-left:2px}
+  .yb-sub{margin:14px 2px 4px;font-size:10.5px;color:var(--muted)} /* v1.7.34：逐月柱状图小标 */
+  .yb-bars{display:flex;gap:5px;align-items:flex-end;height:110px;margin-top:4px}
+  .yb-col{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+  .yb-val{font-size:8px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;margin-bottom:3px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  .yb-bar{width:100%;max-width:24px;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,var(--theme-mid),var(--theme-brand));min-height:3px} /* v1.7.34：月份里程柱——主题双色渐变，0 km 月 faint 占位 */
+  .yb-bar.zero{background:var(--soft-line);opacity:.5}
+  .yb-mon{font-size:8px;color:var(--faint);white-space:nowrap;margin-top:4px}
+  .month-rows{margin-top:4px}
+  .month-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--soft-line)}
+  .month-row:last-child{border-bottom:none}
+  .m-label{font-size:11px;font-weight:600;color:var(--muted);flex:none}
+  .m-last{font-size:10px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .m-val{font-size:15px;font-weight:800;color:var(--ink);margin-left:auto;white-space:nowrap}
+  .m-val small{font-size:9.5px;font-weight:700;color:var(--muted);margin-left:2px}
+  .month-delta{font-size:9.5px;font-weight:720;padding:2px 8px;border-radius:99px;flex:none;white-space:nowrap}
+  .month-delta.up{background:rgba(var(--accent-rgb),.28);color:var(--accent-ink)}
+  .month-delta.down{background:rgba(0,0,0,.06);color:var(--muted)}
+  .month-delta.flat{background:rgba(0,0,0,.05);color:var(--faint)}
+  .month-note{margin:8px 0 0;font-size:9.5px;color:var(--faint);letter-spacing:.02em}
   .theme-current{font-size:8.5px;color:var(--muted);margin-right:8px;letter-spacing:.03em;white-space:nowrap}
   .theme-swatches{display:flex;align-items:center;gap:7px;flex:none}
   .swatch{
@@ -2251,7 +2360,6 @@
   <symbol id="i-settings" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.64 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.54h.09a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.46 9v.09a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51.91Z"/></g></symbol>
   <symbol id="i-bell" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.4a6 6 0 0 0-12 0c0 7-2.5 7-2.5 8.6h17C20.5 15.4 18 15.4 18 8.4Z"/><path d="M9.8 20a2.4 2.4 0 0 0 4.4 0"/></g></symbol>
   <symbol id="i-target" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="4.8"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/></g></symbol>
-  <symbol id="i-ruler" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8.2" width="18" height="7.6" rx="2" transform="rotate(-7 12 12)"/><path d="M7.3 9.1v2.2M10.5 8.7v3.1M13.8 8.3v2.2M17 7.9v3.1"/></g></symbol>
   <symbol id="i-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 19 6v5.3c0 4.4-2.8 7.6-7 9.2-4.2-1.6-7-4.8-7-9.2V6l7-2.5Z"/><path d="m9.2 11.8 1.9 1.9 3.8-3.8"/></g></symbol>
   <symbol id="i-info" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 10.8v5.4M12 7.6v.3"/></g></symbol>
   <symbol id="i-share" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.3 10.8 7.4-4.3M8.3 13.2l7.4 4.3"/></g></symbol>
@@ -2401,6 +2509,10 @@
               </div>
               <span class="plan-tag"><svg class="icon" style="width:9px;height:9px"><use href="#i-edit"/></svg>编辑</span>
             </button>
+            <div class="sport-switch" role="tablist" aria-label="运动模式">
+              <button class="sport-opt active" id="sportWalk" data-sport="walk" role="tab" aria-selected="true">健走</button>
+              <button class="sport-opt" id="sportRide" data-sport="ride" role="tab" aria-selected="false">骑行</button>
+            </div>
             <div class="ready-meta">
               <span id="readyGpsStatus"><i class="gps-dot"></i>GPS 定位中…</span>
               <span id="readyTodayKm">今日已走 0.0 km</span>
@@ -2468,7 +2580,7 @@
               </div>
             </header>
             <div class="history-sub">
-              <span id="historyMonth">10 月</span><i></i><strong id="historyCount">5</strong><span>次行走</span><i></i><strong id="historyDistance">26.6</strong><span>km</span>
+              <span id="historyMonth">10 月</span><i></i><strong id="historyCount">5</strong><span id="historyCountLabel">次行走</span><i></i><strong id="historyDistance">26.6</strong><span>km</span>
             </div>
             <div class="filter-row">
               <div class="filters" role="group" aria-label="筛选记录">
@@ -2485,6 +2597,10 @@
                 <svg class="icon"><use href="#i-layers"/></svg>
                 <span id="sortLabel">按时间 · 倒序</span>
                 <svg class="icon" style="width:10px;height:10px"><use href="#i-chevron-down"/></svg>
+              </button>
+              <button class="sf-cycle" type="button" aria-label="运动类型筛选：全部，点击切换为步行"> <!-- v1.7.23：移入筛选行内右下角（窄屏随行换行落第二行右缘，与排序按钮同排）；v1.7.22：单按钮循环切换，标签与高亮由 syncSportFilterUI 同步 -->
+                <svg class="icon"><use href="#i-filter"/></svg>
+                <span class="sf-cycle-label">全部</span>
               </button>
             </div>
             <div class="search-row" id="searchRow" hidden>
@@ -2520,6 +2636,10 @@
                 <h1>统计</h1>
               </div>
               <div class="stats-head-actions">
+                <button class="sf-cycle" type="button" aria-label="运动类型筛选：全部，点击切换为步行"> <!-- v1.7.22：单按钮循环切换，与轨迹页/我的页联动 -->
+                  <svg class="icon"><use href="#i-filter"/></svg>
+                  <span class="sf-cycle-label">全部</span>
+                </button>
                 <button class="period-pill" id="periodBtn" aria-label="切换统计周期">
                   <svg class="icon"><use href="#i-calendar"/></svg>
                   <span id="periodLabel">本周</span>
@@ -2624,12 +2744,62 @@
               </div>
             </article>
 
+            <article class="card month-card" data-stat-card="monthon"> <!-- v1.7.25：月度对比卡——本月 vs 上月（里程/次数/消耗），随运动筛选联动，入卡片管理 -->
+              <div class="daily-head">
+                <div>
+                  <p class="eyebrow">THIS MONTH</p>
+                  <h3>月度对比</h3>
+                </div>
+                <span class="sport-pill" id="monSportPill">全部</span>
+              </div>
+              <div class="month-rows">
+                <div class="month-row"><span class="m-label">里程</span><span class="m-last" id="mcKmLast">上月 7.2 km</span><strong class="m-val" id="mcKm">9.8<small>km</small></strong><span class="month-delta up" id="mcKmDelta">▲ +2.6</span></div>
+                <div class="month-row"><span class="m-label">次数</span><span class="m-last" id="mcNLast">上月 2 次</span><strong class="m-val" id="mcN">3<small>次</small></strong><span class="month-delta up" id="mcNDelta">▲ +1</span></div>
+                <div class="month-row"><span class="m-label">消耗</span><span class="m-last" id="mcKcalLast">上月 401 kcal</span><strong class="m-val" id="mcKcal">538<small>kcal</small></strong><span class="month-delta up" id="mcKcalDelta">▲ +137</span></div>
+              </div>
+              <p class="month-note" id="mcNote">与上月同期相比</p>
+            </article>
+
+            <article class="card month-card" data-stat-card="yearon"> <!-- v1.7.33：年度对比卡——本年至今 vs 去年同期（里程/次数/消耗），随运动筛选联动，入卡片管理 -->
+              <div class="daily-head">
+                <div>
+                  <p class="eyebrow">THIS YEAR</p>
+                  <h3>年度对比</h3>
+                </div>
+                <div class="head-actions"><button class="heat-btn" id="yearBoardBtn" type="button"><svg class="icon"><use href="#i-chart"/></svg><span>年度看板</span></button><span class="sport-pill" id="ycSportPill">全部</span></div>
+              </div>
+              <div class="month-rows">
+                <div class="month-row"><span class="m-label">里程</span><span class="m-last" id="ycKmLast">去年同期 0 km</span><strong class="m-val" id="ycKm">0<small>km</small></strong><span class="month-delta flat" id="ycKmDelta">持平</span></div>
+                <div class="month-row"><span class="m-label">次数</span><span class="m-last" id="ycNLast">去年同期 0 次</span><strong class="m-val" id="ycN">0<small>次</small></strong><span class="month-delta flat" id="ycNDelta">持平</span></div>
+                <div class="month-row"><span class="m-label">消耗</span><span class="m-last" id="ycKcalLast">去年同期 0 kcal</span><strong class="m-val" id="ycKcal">0<small>kcal</small></strong><span class="month-delta flat" id="ycKcalDelta">持平</span></div>
+              </div>
+              <p class="month-note" id="ycNote">与去年同期（去年今日止）相比</p>
+            </article>
+
+            <article class="card heatmap-card" data-stat-card="heatmap"> <!-- v1.7.28：全年活跃热力图——53 周×7 日格子按当日里程 5 档着色，今日描边高亮，口径随运动筛选联动，入卡片管理体系 -->
+              <div class="daily-head">
+                <div><p class="eyebrow">ACTIVITY</p><h3>活跃热力</h3></div>
+                <button class="heat-btn" id="weekPosterBtn" type="button"><svg class="icon"><use href="#i-poster"/></svg><span>周报海报</span></button>
+              </div>
+              <div class="heat-scroll" id="heatScroll">
+                <div class="heat-inner">
+                  <div class="heat-grid" id="heatGrid" role="img"></div>
+                </div>
+              </div>
+              <div class="heat-tip" id="heatTip" role="tooltip" hidden></div> <!-- v1.7.34：月块悬浮明细气泡（fixed，随月块 hover 显示） -->
+              <div class="heat-foot">
+                <p class="heat-note" id="heatNote">近一年 0 天有记录</p>
+                <div class="heat-legend" aria-hidden="true"><span>少</span><i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>多</span></div>
+              </div>
+            </article>
+
             <article class="card cumulative-card" data-stat-card="cumulative">
               <div class="daily-head">
                 <div>
                   <p class="eyebrow">ALL TIME</p>
                   <h3>累计数据</h3>
                 </div>
+                <span class="sport-pill" id="cumSportPill">全部</span> <!-- v1.7.26：筛选口径小标签常显——全部口径也显示「全部」（v1.7.25 引入，本轮按用户反馈从「非全量才显示」改为常显） -->
               </div>
               <div class="cum-main"><strong id="cumKm">26.6</strong><span>km</span></div>
               <p class="cum-note" id="cumNote">相当于绕西湖走了约 3 圈</p>
@@ -2709,7 +2879,7 @@
               </div>
             </article>
 
-            <div class="section-head"><h2>累计数据</h2><span id="profileSince">自 2026.10.10</span></div>
+            <div class="section-head"><h2>累计数据</h2><div class="cum-side"><span id="profileSince">自 2026.10.10</span><button class="sf-cycle" type="button" aria-label="运动类型筛选：全部，点击切换为步行"><svg class="icon"><use href="#i-filter"/></svg><span class="sf-cycle-label">全部</span></button></div></div> <!-- v1.7.27：我的页口径小标签已删除（仅保留统计页两枚）；v1.7.24：累计数据区头部运动类型单按钮，与轨迹页、统计页三处联动（syncSportFilterUI 同步标签，applySportFilter 即时重算累计数据） -->
             <div class="profile-stats">
               <div class="stat-tile accent">
                 <div class="tile-icon"><svg class="icon"><use href="#i-route"/></svg></div>
@@ -2771,15 +2941,10 @@
                 <span class="settings-meta" id="backupSettingMeta">导出 / 云端 / 恢复</span>
                 <svg class="icon settings-arrow"><use href="#i-chevron"/></svg>
               </button>
-              <div class="settings-row">
+              <button class="settings-row" id="notifySettingRow">
                 <span class="settings-icon"><svg class="icon"><use href="#i-bell"/></svg></span>
                 <span class="settings-label">提醒与通知</span>
-                <button class="switch" id="notifySwitch" role="switch" aria-checked="true" aria-label="提醒与通知"></button>
-              </div>
-              <button class="settings-row" data-setting="单位与显示">
-                <span class="settings-icon"><svg class="icon"><use href="#i-ruler"/></svg></span>
-                <span class="settings-label">单位与显示</span>
-                <span class="settings-meta">公里 · 千卡</span>
+                <span class="settings-meta" id="notifySettingMeta">每天 19:30</span>
                 <svg class="icon settings-arrow"><use href="#i-chevron"/></svg>
               </button>
               <button class="settings-row" id="accountSettingRow">
@@ -2845,7 +3010,7 @@
             <div class="detail-stat-grid" id="detailStats"></div>
             <div class="detail-chips" id="detailChips"></div>
             <div class="diary-block" id="detailDiary"></div>
-            <div class="splits-head"><h2>分段配速</h2><span>每公里</span></div>
+            <div class="splits-head"><h2>分段配速</h2><span id="splitsNote">每公里</span></div>
             <div class="splits" id="detailSplits"></div>
             <button class="detail-share" id="detailShareBtn">
               <svg class="icon"><use href="#i-share"/></svg>分享这段轨迹
@@ -2969,6 +3134,61 @@
               <svg class="icon accent-check"><use href="#i-check"/></svg>
             </button>
           </div>
+        </div>
+      </div>
+
+      <!-- notify sheet (v1.7.39) -->
+      <div class="modal-layer" id="notifyLayer" role="dialog" aria-modal="true" aria-labelledby="notifyTitle" aria-hidden="true">
+        <div class="modal-card">
+          <div class="modal-head">
+            <div class="sheet-handle" style="margin:0"></div>
+            <button class="modal-close" data-close-modal="notifyLayer" aria-label="关闭">
+              <svg class="icon"><use href="#i-close"/></svg>
+            </button>
+          </div>
+          <p class="eyebrow">NOTIFICATION</p>
+          <h2 class="modal-title" id="notifyTitle">提醒与通知</h2>
+          <p class="modal-sub">每天到点提醒你出门走走；周目标进度提醒会在周日自动检查本周缺口。网页端需应用处于打开状态，安卓安装包端支持后台本地提醒。</p>
+          <div class="notify-list">
+            <div class="notify-row">
+              <div class="notify-txt">
+                <strong>提醒总开关</strong>
+                <span>关闭后以下两项都不触发</span>
+              </div>
+              <button class="switch" id="notifySwitch" role="switch" aria-checked="true" aria-label="提醒与通知总开关"></button>
+            </div>
+            <div class="notify-row" id="notifyTimeRow">
+              <div class="notify-txt">
+                <strong>每日健走提醒</strong>
+                <span id="notifyTimeMeta">每天 19:30</span>
+              </div>
+              <input type="time" id="notifyTimeInput" class="notify-time-inline" aria-label="提醒时间">
+            </div>
+            <div class="notify-row" id="notifyGoalRow">
+              <div class="notify-txt">
+                <strong>周目标进度提醒</strong>
+                <span>周日检查本周缺口，未达标提醒补量</span>
+              </div>
+              <button class="switch" id="goalNotifySwitch" role="switch" aria-checked="true" aria-label="周目标进度提醒"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- year board sheet (v1.7.34) -->
+      <div class="modal-layer" id="yearBoardLayer" role="dialog" aria-modal="true" aria-labelledby="yearBoardTitle" aria-hidden="true">
+        <div class="modal-card">
+          <div class="modal-head">
+            <div class="sheet-handle" style="margin:0"></div>
+            <button class="modal-close" data-close-modal="yearBoardLayer" aria-label="关闭">
+              <svg class="icon"><use href="#i-close"/></svg>
+            </button>
+          </div>
+          <p class="eyebrow">YEAR BOARD</p>
+          <h2 class="modal-title" id="yearBoardTitle">年度运动看板</h2>
+          <p class="modal-sub" id="yearBoardSub">本年运动数据总览，随运动筛选联动。</p>
+          <div id="yearBoardBody"></div>
         </div>
       </div>
 
@@ -3716,6 +3936,7 @@
       distance: Math.round(+r.distance * 100) / 100,
       durationSec: Math.max(1, Math.floor(+r.durationSec) || 0),
       steps: Math.max(0, Math.floor(+r.steps) || 0),
+      sport: r.sport === 'ride' ? 'ride' : 'walk', /* v1.7.18：运动模式（旧记录无该字段归健走） */
       kcal: Math.max(0, Math.floor(+r.kcal) || 0),
       elevation: Math.max(0, Math.floor(+r.elevation) || 0),
       week: true, month: true, year: true,
@@ -3726,7 +3947,7 @@
       /* v1.6.0：GPS 真实轨迹随记录持久化（GCJ-02 [lon,lat] 点集，最多 400 点；导入/恢复/合并同样保留） */
       track: (Array.isArray(r.track) && r.track.length >= 2 && r.track.length <= 400
         && r.track.every(p => Array.isArray(p) && Number.isFinite(+p[0]) && Number.isFinite(+p[1])))
-        ? r.track.slice(0, 400).map(p => [Math.round(+p[0] * 1e5) / 1e5, Math.round(+p[1] * 1e5) / 1e5])
+        ? r.track.slice(0, 400).map(p => { const q = [Math.round(+p[0] * 1e5) / 1e5, Math.round(+p[1] * 1e5) / 1e5]; if (p.length >= 3 && Number.isFinite(+p[2]) && +p[2] > 0) q.push(Math.round(+p[2])); return q; }) /* v1.7.29：加载/导入同样保留点时间戳 */
         : undefined
     };
   }
@@ -4144,7 +4365,7 @@
     if (state.started && state.mode === 'gps') {
       const lastRecPt = gps.recTrail[gps.recTrail.length - 1];
       if (!lastRecPt || haversineM(lastRecPt, g) >= gps.recStep) {
-        gps.recTrail.push(g);
+        gps.recTrail.push([g[0], g[1], Number.isFinite(pos.timestamp) ? pos.timestamp : Date.now()]); /* v1.7.29：轨迹点带采集时刻，供详情页真实分段配速插值 */
         if (gps.recTrail.length > 800) {
           gps.recTrail = gps.recTrail.filter((_, i) => i % 2 === 0);
           gps.recStep *= 2;
@@ -4403,7 +4624,7 @@
      Route config (start / end / length)
   ------------------------------------------------------------------ */
   /* 应用版本：每次改动同步升版（与 package.json 版本保持一致） */
-  const APP_VERSION = '1.7.17'; /* v1.7.17：原生 App 环境自动隐藏模拟状态栏、内容上移交还系统状态栏（方案B，网页版不受影响）；v1.7.16：关于弹层开发者名改 le3321；应用图标内嵌 data URI 修复静态部署不显示；v1.7.15：等级 LV.1-9 不补零 + Health Connect 真实步数桥接（原生环境，网页版不受影响）；v1.7.14：等级徽标不补零——等级为 0 时显示 LV. 0，其余等级保持两位补零；v1.7.13：开始记录字号回调——text-2xl（24px）反馈太大，适当调小为 text-xl（20px）；v1.7.12：开始记录按钮文案调整——删除英文小标 READY WHEN YOU ARE，「开始记录」字号升为 text-2xl（24px）；v1.7.11：备源升级为准确步行路网——备源由 OSRM 演示服务器（驾车路网、距离近似）换为 Valhalla 公共实例（FOSSGIS 运营、独立主机、costing=pedestrian 真步行路网），请求改 POST JSON、响应按 polyline 解码，接管后路径与距离均为准确步行口径；v1.7.10：选点路线备用路线源——主源（OSRM 官方步行实例）失败重试时自动轮换到备源（OSRM 演示服务器、独立主机、驾车路网近似步行距离），主源故障不再直接退化为直线；v1.7.9：选点路线真实路径增强——OSRM 步行路网请求发起即显示「正在获取路线…」、8s 超时中止、失败自动重试 2 次（间隔 2.5s）、重试耗尽保持直线回退并标注「路线获取失败」，成功后照常画真实路径并自动填全长；v1.7.8：个人卡删除「MEMBER NO. 0182」装饰小标（假编号无数据对应，资历由下方「第 N 天」表达），同步清理两处专属 CSS；v1.7.7：地图选点期间就绪弹层暂时隐藏——设置起点终点进入地图选点时 ready-sheet 暂时消失避免遮挡地图，退出选点（选完图钉/取消/Esc）即恢复；v1.7.6：轨迹页底部文案简化——「THAT'S ALL FOR NOW · KEEP WALKING」改为「KEEP WALKING」；v1.7.5：主色选择入口收敛到色板——删除设置页「纯白主色」行，点击色板中已激活的纯白色块直接弹出主色选择弹层（从其它主题第一次点纯白仍是切换主题）；v1.7.4：排序弹层方向提示随排序依据联动——「按距离」时方向按钮文案改「倒序（最远在前）/正序（最近在前）」，「按时间」保持「最新/最早在前」，切换依据即时刷新、弹层打开时按当前依据渲染；v1.7.3：累计数据卡风格与统计页其它卡片统一——改用标准 card 底与 daily-head 标题结构（eyebrow「ALL TIME」+ h3「累计数据」），移除深绿渐变底、等高线装饰与专属文字色，改标准 ink/muted/faint；v1.7.2：修复轨迹列表「按时间」排序——此前倒序直接沿用加载顺序（重载后最旧在前、演示轨迹错位、正序整体颠倒），改为按记录时间戳真实比较；「按距离」加时间稳定次序；v1.7.1：统计卡片管理增强——弹层内行支持长按拖拽重排（序号把手、其余行让位动画、边界钳制），新增「添加已隐藏的卡片」chips 入口可点选恢复显示；v1.7.0：统计页卡片自定义——页头新增编辑入口，弹层内可上移/下移排序、开关显示/隐藏（至少保留一张）、恢复默认，配置存 shanxing:statCards，重排按 data-stat-card 插到引言前；v1.6.9：分享海报中文名——保存 PNG 改「山行-海报-记录ID.png」、系统分享文件改「山行-海报.png」，至此导出文件全部中文化；v1.6.8：导出文件中文名——CSV 改「山行-记录导出-年月日-时分.csv」、JSON 云端备份改「山行-备份-年月日-时分.json」，云端识别与回退校验兼容旧英文命名；v1.6.7：纯白主色改为弹层选择——设置行改为带箭头点击行，点开底部弹层六选一（大色点 + 名称 + 选中勾），选择即时生效自动保存；v1.6.6：纯白主色可选——纯白主题下新增「纯白主色」选择行，标准蓝 + 雾霾蓝/薄荷/藕紫/杏色/暖灰五种淡色（浅底深字按钮 + 中饱和线条，夜间同思路），选择持久化且仅纯白主题生效；v1.6.5：留白主题重构为「纯白」——普通应用白色模式（白底、中性灰阶、标准蓝主色 #2563EB，昼夜主色一致）；v1.6.4：今日已走随目标类型切换口径——步数目标显示「今日已走 N 步 · 周目标 N%」；v1.6.3：轨迹列表刷新闪烁消除——渲染签名对比，内容真变化才重建 DOM 重放入场动画；v1.6.2：统计页边距重设——best-card 补内边距与卡片间距、award-card 补卡片间距，整页 13px 节奏统一；v1.6.1：个人最佳卡防溢出（minmax(0,1fr) 网格轨道 + min-width:0 + 标签省略 + 数值可换行）；v1.6.0：①统计页个人最佳卡（6 项纪录）②月/年目标独立设置（默认跟随周目标放大）③记录 CSV 导出 ④GPS 真实轨迹存档与详情页真实渲染   */
+  const APP_VERSION = '1.7.40'; /* v1.7.40：删除设置页「单位与显示」装饰行（Visual Edit 评论「这里有什么用？」→ 核实为纯装饰：点击仅弹 toast、meta「公里 · 千卡」为写死文案，全应用并无单位切换逻辑；经用户确认直接删除）——一并清理唯一引用的 data-setting 通用 toast 绑定与 #i-ruler 图标 symbol。v1.7.39：提醒与通知改为弹窗式设置（Visual Edit 反馈「与其他选项一样做成弹窗」）——设置页改为带箭头可点击行（meta 显示「每天 HH:MM」或「已关闭」），点击打开提醒设置弹窗 notifyLayer（总开关 + 每日时间行 + 周目标开关三行；时间为行内输入框即改即存，原独立时间弹层移除；总开关关闭时两子行置灰不可点）；设置页不再直接暴露子行。v1.7.38：提醒与通知真实化（用户选定「两种提醒都要」）——主开关持久化（shanxing:notify，关闭时隐藏子行）；新增「每日健走提醒」行+时间选择弹层（shanxing:notifyTime，默认 19:30，到点且当天未提醒则应用内提醒+已授权 Web 通知）与「周目标进度提醒」开关（shanxing:notifyGoal，周日 10 点后检查本周缺口未达标则提醒补量）；APK 端检测 Capacitor LocalNotifications 插件自动注册每日系统本地通知（未装插件静默跳过）；提醒引擎 notifyTick 参数化 now 便于测试注入。v1.7.37：完成弹层自动保存（Visual Edit 反馈「自动保存记录，只有点击放弃按钮时不保存，点击保存或其他地方退出都自动保存；保存后停留在记录界面」）——保存主体抽成共享函数 finishSave(fromClose)：点「保存这段路」、点 X、按 Esc 都自动保存记录，仅「放弃本次记录」按钮不保存；保存后不再跳「轨迹」页、留在「记录」页（补刷今日已走/称号进度/目标卡），轨迹页数据仍预刷新。v1.7.36：热力图方块补描线 border:1px solid var(--line)（无记录格保持白色，方块在浅色卡底上仍可辨；线色随主题与日夜间自适应；图例同步；占位空格不描线）——Visual Edit 反馈「方块描线还是要的」。v1.7.35：无记录格与图例 l0 底色改白色（不再随主题色显示颜色；夜间用中性白微底 rgba(255,255,255,.07) 深底可辨不刺眼）——Visual Edit 反馈「无时显示白色即可，不显示颜色」，回调 v1.7.33 的「l0 跟随主题色」；v1.7.34：热力图月块悬浮明细 + 年度运动看板 + 纯白主色热力联动（用户反馈三处）——①热力图月块悬浮浮出该月汇总明细（活跃天数/次数/里程/时长；fixed 气泡不被滚动容器裁切、拖拽中不弹）②「年度对比」卡新增「年度看板」按钮——弹层内本年逐月里程柱状图 + 6 项年度总览瓦片（总里程/总次数/总时长/总消耗/最远单次/累计步数，口径随运动筛选联动）③纯白主题六种主色下「活跃热力」色阶同步跟随（10 个 accent 变量块各补 --theme-heat-rgb=brand-rgb，修复 v1.7.32 热力基色按主题定义、未纳入 accent 覆盖的遗留）；v1.7.33：热力图日历式布局与滑动修复 + 年度对比卡（Visual Edit 反馈）——①热力图改日历式月块：每月独立 mini 日历（月标签居中 + 一~日星期头 + 周一到周日一行 7 格），12 个月横排②拖拽滑动 + 滚轮横滚（修复「还是无法滑动」：overflow 滚动本身正常，但桌面预览鼠标既拖不动、滚轮又是纵向的）③图例整排跟随主题色（l0 无记录底色也换主题色低透明度，与 l1-l4 组成完整梯度）④统计页新增「年度对比」卡（本年至今 vs 去年同期：里程/次数/消耗，随筛选联动，入卡片管理）；v1.7.32：热力图月块化与深基色（Visual Edit 反馈）——①每月数据从 1 号开始到月末结束、跨月日期不再借位补格（月块化网格：每月独立成块，1 号按真实星期行落位，1 号前/月末后的余位留空；月界空列隔离保留）②色阶换深色基色 --heat-rgb（此前两轮仅调透明度仍反馈「太淡」，根因是默认主题基色 #DFF59B 过浅、alpha 到 1.0 也只是粉彩；各主题取 track/mid 同系深色，图例同步）；v1.7.31：热力图第二轮可读性（Visual Edit 反馈）——①色阶再加深（.34/.55/.75/.96 → .5/.68/.84/1.0，图例同步）+ 图例色块 9→11px（「根本看不清，多加重」）②窗口改月对齐：恰好 12 个月（去年下月→本月，如 10 月显示 25年11月-26年10月），每年首月标签带「YY年」前缀跨年可辨、月初不再出现 13 个标签（「保留12个月，跨年也不消失」）；v1.7.30：热力图可读性增强（Visual Edit 反馈三处）——①月界空列隔离（每月之间留一列空白格，月份间隔可辨）②色阶加重（.22/.42/.68/.92 → .34/.55/.75/.96，图例同步）③今日格描边改内嵌（outline-offset -2px，不再被滚动容器边缘裁切）；v1.7.29：①GPS 轨迹详情地图升级为高德瓦片真实历史地图（轨迹 GCJ-02 与瓦片坐标系对齐，打开详情后异步升级、离线或加载失败保持示意图）②真实每公里分段配速（轨迹点带采集时间戳，按 haversine 里程插值每公里边界；老记录/手动记录回退平均配速估算并显式标注）③示意图底图标签诚实化（装饰街道名改「路线示意图」）；v1.7.28：①统计页新增「活跃热力」卡（GitHub 风格全年 53 周×7 日热力图，按当日里程 5 档着色、今日描边高亮、口径随运动筛选联动、入卡片管理体系）②周总结分享海报（热力图卡「周报海报」按钮一键生成本周总结图：合计里程/次数/时长/消耗、最远一天、周目标达成率，复用海报弹层与保存链）；v1.7.27：删除「我的」页累计数据区的口径小标签（Visual Edit 反馈，仅保留统计页累计卡/月度对比卡两枚）；v1.7.26：筛选口径小标签常显——全部口径也显示「全部」（累计卡/月度卡/我的页三处，用户反馈 v1.7.25 的「全量时隐藏」改为常显）；v1.7.25：①筛选口径小标签——非全量时统计页累计卡/月度对比卡头部与我的页累计区显示当前口径 ②统计页新增「月度对比」卡（本月 vs 上月：里程/次数/消耗，随筛选联动，入卡片管理可排序/隐藏）；v1.7.24：我的页「累计数据」区头部新增运动类型单按钮——.cum-side 右侧组（起始日期+按钮）与轨迹/统计页三处联动，累计数据随所选类型即时重算；v1.7.23：轨迹页运动类型单按钮移入筛选行内右下角（随行换行落第二行右缘）；v1.7.22：运动类型切换改为单按钮循环——全部→步行→骑行→全部，轨迹页与统计页页头各一枚，非全量时主题色高亮；v1.7.20：统计页页头新增「全部/步行/骑行」切换按钮（与轨迹/我的页联动，复用全局 sportFilter）；v1.7.19：轨迹页运动类型筛选+统计/我的页数据联动；v1.7.18：骑行模式（chips 切换、不计步、热量 28 kcal/km、模拟 20km/h、详情/历史标记、HC 跳过）+ GPS 后台持续记录桥接（原生前台服务，插件待接入）；v1.7.17：原生 App 环境自动隐藏模拟状态栏、内容上移交还系统状态栏（方案B，网页版不受影响）；v1.7.16：关于弹层开发者名改 le3321；应用图标内嵌 data URI 修复静态部署不显示；v1.7.15：等级 LV.1-9 不补零 + Health Connect 真实步数桥接（原生环境，网页版不受影响）；v1.7.14：等级徽标不补零——等级为 0 时显示 LV. 0，其余等级保持两位补零；v1.7.13：开始记录字号回调——text-2xl（24px）反馈太大，适当调小为 text-xl（20px）；v1.7.12：开始记录按钮文案调整——删除英文小标 READY WHEN YOU ARE，「开始记录」字号升为 text-2xl（24px）；v1.7.11：备源升级为准确步行路网——备源由 OSRM 演示服务器（驾车路网、距离近似）换为 Valhalla 公共实例（FOSSGIS 运营、独立主机、costing=pedestrian 真步行路网），请求改 POST JSON、响应按 polyline 解码，接管后路径与距离均为准确步行口径；v1.7.10：选点路线备用路线源——主源（OSRM 官方步行实例）失败重试时自动轮换到备源（OSRM 演示服务器、独立主机、驾车路网近似步行距离），主源故障不再直接退化为直线；v1.7.9：选点路线真实路径增强——OSRM 步行路网请求发起即显示「正在获取路线…」、8s 超时中止、失败自动重试 2 次（间隔 2.5s）、重试耗尽保持直线回退并标注「路线获取失败」，成功后照常画真实路径并自动填全长；v1.7.8：个人卡删除「MEMBER NO. 0182」装饰小标（假编号无数据对应，资历由下方「第 N 天」表达），同步清理两处专属 CSS；v1.7.7：地图选点期间就绪弹层暂时隐藏——设置起点终点进入地图选点时 ready-sheet 暂时消失避免遮挡地图，退出选点（选完图钉/取消/Esc）即恢复；v1.7.6：轨迹页底部文案简化——「THAT'S ALL FOR NOW · KEEP WALKING」改为「KEEP WALKING」；v1.7.5：主色选择入口收敛到色板——删除设置页「纯白主色」行，点击色板中已激活的纯白色块直接弹出主色选择弹层（从其它主题第一次点纯白仍是切换主题）；v1.7.4：排序弹层方向提示随排序依据联动——「按距离」时方向按钮文案改「倒序（最远在前）/正序（最近在前）」，「按时间」保持「最新/最早在前」，切换依据即时刷新、弹层打开时按当前依据渲染；v1.7.3：累计数据卡风格与统计页其它卡片统一——改用标准 card 底与 daily-head 标题结构（eyebrow「ALL TIME」+ h3「累计数据」），移除深绿渐变底、等高线装饰与专属文字色，改标准 ink/muted/faint；v1.7.2：修复轨迹列表「按时间」排序——此前倒序直接沿用加载顺序（重载后最旧在前、演示轨迹错位、正序整体颠倒），改为按记录时间戳真实比较；「按距离」加时间稳定次序；v1.7.1：统计卡片管理增强——弹层内行支持长按拖拽重排（序号把手、其余行让位动画、边界钳制），新增「添加已隐藏的卡片」chips 入口可点选恢复显示；v1.7.0：统计页卡片自定义——页头新增编辑入口，弹层内可上移/下移排序、开关显示/隐藏（至少保留一张）、恢复默认，配置存 shanxing:statCards，重排按 data-stat-card 插到引言前；v1.6.9：分享海报中文名——保存 PNG 改「山行-海报-记录ID.png」、系统分享文件改「山行-海报.png」，至此导出文件全部中文化；v1.6.8：导出文件中文名——CSV 改「山行-记录导出-年月日-时分.csv」、JSON 云端备份改「山行-备份-年月日-时分.json」，云端识别与回退校验兼容旧英文命名；v1.6.7：纯白主色改为弹层选择——设置行改为带箭头点击行，点开底部弹层六选一（大色点 + 名称 + 选中勾），选择即时生效自动保存；v1.6.6：纯白主色可选——纯白主题下新增「纯白主色」选择行，标准蓝 + 雾霾蓝/薄荷/藕紫/杏色/暖灰五种淡色（浅底深字按钮 + 中饱和线条，夜间同思路），选择持久化且仅纯白主题生效；v1.6.5：留白主题重构为「纯白」——普通应用白色模式（白底、中性灰阶、标准蓝主色 #2563EB，昼夜主色一致）；v1.6.4：今日已走随目标类型切换口径——步数目标显示「今日已走 N 步 · 周目标 N%」；v1.6.3：轨迹列表刷新闪烁消除——渲染签名对比，内容真变化才重建 DOM 重放入场动画；v1.6.2：统计页边距重设——best-card 补内边距与卡片间距、award-card 补卡片间距，整页 13px 节奏统一；v1.6.1：个人最佳卡防溢出（minmax(0,1fr) 网格轨道 + min-width:0 + 标签省略 + 数值可换行）；v1.6.0：①统计页个人最佳卡（6 项纪录）②月/年目标独立设置（默认跟随周目标放大）③记录 CSV 导出 ④GPS 真实轨迹存档与详情页真实渲染    */
   {
     const m = $('#aboutSettingMeta');
     if (m) m.textContent = 'v' + APP_VERSION;
@@ -4506,6 +4727,7 @@
      Recorder state + simulation
   ------------------------------------------------------------------ */
   const WALK_MPS = 1.5;
+  const RIDE_MPS = 5.5; /* v1.7.18：骑行模拟速度 5.5 m/s（约 20 km/h） */
   const TICK_MS = 500;
   const SIM_SECONDS = 30;
   const state = {
@@ -4519,6 +4741,7 @@
     routeComplete: false,
     timer: null,
     mode: 'sim',
+    sport: (() => { try { return localStorage.getItem('shanxing:sport') === 'ride' ? 'ride' : 'walk'; } catch (e) { return 'walk'; } })(), /* v1.7.18：运动模式，持久化 shanxing:sport */
     recStart: 0,
     pausedMs: 0,
     pauseTs: null
@@ -4536,7 +4759,7 @@
     $('#panelDistance').textContent = state.distance.toFixed(2);
     $('#panelDuration').textContent = formatDuration(state.elapsed);
     $('#panelPace').textContent = pace;
-    $('#panelSteps').textContent = fmtNum(state.steps);
+    $('#panelSteps').textContent = state.sport === 'ride' ? '—' : fmtNum(state.steps);
     $('#panelKcal').textContent = fmtNum(state.kcal);
     const hasKm = routeHasTarget();
     const pct = hasKm ? Math.min(100, Math.round(state.distance / routeCfg.km * 100)) : 0;
@@ -4597,7 +4820,7 @@
     liveDistance.textContent = state.distance.toFixed(2);
     liveDuration.textContent = formatDuration(state.elapsed);
     livePace.textContent = pace;
-    liveSteps.textContent = fmtNum(state.steps);
+    liveSteps.textContent = state.sport === 'ride' ? '—' : fmtNum(state.steps); /* v1.7.18：骑行不显示步数 */
     liveKcal.textContent = fmtNum(state.kcal);
     livePaceSide.textContent = pace === '—' ? '等待起步' : `配速 ${pace}`;
     updateLivePanel();
@@ -4607,8 +4830,8 @@
     if (!state.running || state.paused) return;
     if (state.mode === 'gps') {
       state.elapsed = Math.max(0, Math.round((Date.now() - state.recStart - state.pausedMs) / 1000));
-      state.steps = Math.round(state.elapsed * 1.85);
-      state.kcal = Math.round(state.distance * 52);
+      state.steps = state.sport === 'ride' ? 0 : Math.round(state.elapsed * 1.85); /* v1.7.18：骑行不计步 */
+      state.kcal = Math.round(state.distance * (state.sport === 'ride' ? 28 : 52)); /* v1.7.18：骑行热量系数 28 kcal/km */
       updateLiveStats();
       if (routeHasTarget()) {
         setTrackProgress(Math.min(state.distance / routeCfg.km, 1));
@@ -4623,12 +4846,12 @@
       return;
     }
     state.elapsed += SIM_SECONDS;
-    state.distance += SIM_SECONDS * WALK_MPS / 1000;
+    state.distance += SIM_SECONDS * (state.sport === 'ride' ? RIDE_MPS : WALK_MPS) / 1000; /* v1.7.18：骑行模拟 20 km/h */
     if (routeHasTarget() && !state.routeComplete && state.distance >= routeCfg.km) {
       state.distance = routeCfg.km;
-      state.elapsed = Math.round(routeCfg.km * 1000 / WALK_MPS);
-      state.steps = Math.round(state.elapsed * 1.85);
-      state.kcal = Math.round(state.distance * 52);
+      state.elapsed = Math.round(routeCfg.km * 1000 / (state.sport === 'ride' ? RIDE_MPS : WALK_MPS));
+      state.steps = state.sport === 'ride' ? 0 : Math.round(state.elapsed * 1.85); /* v1.7.18：骑行不计步 */
+      state.kcal = Math.round(state.distance * (state.sport === 'ride' ? 28 : 52)); /* v1.7.18：骑行热量系数 28 kcal/km */
       state.routeComplete = true;
       updateLiveStats();
       setTrackProgress(1);
@@ -4636,8 +4859,8 @@
       toast('已走完推荐路线，可以结束本次记录');
       return;
     }
-    state.steps = Math.round(state.elapsed * 1.85);
-    state.kcal = Math.round(state.distance * 52);
+    state.steps = state.sport === 'ride' ? 0 : Math.round(state.elapsed * 1.85); /* v1.7.18：骑行不计步 */
+    state.kcal = Math.round(state.distance * (state.sport === 'ride' ? 28 : 52)); /* v1.7.18：骑行热量系数 */
     updateLiveStats();
     if (routeHasTarget()) setTrackProgress(Math.min(state.distance / routeCfg.km, 1));
   }
@@ -4646,6 +4869,24 @@
     clearInterval(state.timer);
     state.timer = setInterval(tick, state.mode === 'gps' ? 1000 : TICK_MS);
   }
+
+  /* v1.7.18：运动模式切换（健走/骑行）——记录中不可切换，选择持久化 */
+  const sportOpts = $$('.sport-opt');
+  function syncSportUI() {
+    sportOpts.forEach(b => {
+      const on = b.dataset.sport === state.sport;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+  }
+  sportOpts.forEach(btn => btn.addEventListener('click', () => {
+    if (state.started) return;
+    state.sport = btn.dataset.sport;
+    try { localStorage.setItem('shanxing:sport', state.sport); } catch (e) {}
+    syncSportUI();
+    updateReadyToday();
+  }));
+  syncSportUI();
 
   function startRecording() {
     state.started = true;
@@ -4674,6 +4915,7 @@
     syncPauseUI();
     updateLiveStats();
     setTrackProgress(0);
+    if (state.mode === 'gps') bgStartTracking(); /* v1.7.18：GPS 后台持续记录（原生前台服务） */
     startTimer();
     toast(state.mode === 'gps' ? 'GPS 已锁定，开始记录' : 'GPS 未就绪 · 已用演示轨迹记录');
   }
@@ -4681,7 +4923,7 @@
   function pauseRecording() {
     if (!state.started || state.paused) return;
     state.paused = true;
-    if (state.mode === 'gps') state.pauseTs = Date.now();
+    if (state.mode === 'gps') { state.pauseTs = Date.now(); bgStopTracking(); } /* v1.7.18：暂停时撤下前台服务 */
     syncPauseUI();
   }
 
@@ -4692,6 +4934,7 @@
     if (state.mode === 'gps' && state.pauseTs) {
       state.pausedMs += Date.now() - state.pauseTs;
       state.pauseTs = null;
+      bgStartTracking(); /* v1.7.18：恢复记录时重启前台服务 */
     }
     syncPauseUI();
     startTimer();
@@ -4709,6 +4952,7 @@
   }
 
   function resetRecorder() {
+    bgStopTracking(); /* v1.7.18：结束/取消记录时撤下前台服务 */
     clearInterval(state.timer);
     state.timer = null;
     state.started = false;
@@ -5402,12 +5646,14 @@
         </g>
         ${realTrack
           ? `<g class="detail-map-label" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif" font-size="7.6" font-weight="650" letter-spacing="1.3" opacity=".82"><text x="27" y="62">GPS 真实轨迹</text></g>`
-          : `<g class="detail-map-label" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif" font-size="7.6" font-weight="650" letter-spacing="1.3" opacity=".82">
-          <text x="27" y="62">北山街</text>
-          <text x="282" y="274" transform="rotate(12 282 274)">南山路</text>
-          <text x="212" y="203" font-size="14" letter-spacing="4" fill="#79A29D" opacity=".8">西 湖</text>
-          <text x="92" y="146" font-size="7.2" letter-spacing="1.8">孤山</text>
-        </g>`}
+          : `<g class="detail-map-label" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif" font-size="7.6" font-weight="650" letter-spacing="1.3" opacity=".82"><text x="27" y="62">路线示意图</text></g>`}
+        ${detailRouteLayer(d, first, last, finishLeft, finishLabelX)}
+      </svg>`;
+  }
+
+  function detailRouteLayer(d, first, last, finishLeft, finishLabelX) {
+    /* v1.7.29：路线/起终点/walker 图层抽取共用——示意图底图与高德瓦片真实地图渲染同一套图层 */
+    return `
         <path class="detail-route-casing" d="${d}" fill="none" stroke-width="10.5" stroke-linecap="round" stroke-linejoin="round"/>
         <path class="detail-route-line" d="${d}" fill="none" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/>
         <path class="detail-walk-trail" d="${d}" fill="none" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -5423,8 +5669,125 @@
         <g class="detail-route-label" font-family="-apple-system,BlinkMacSystemFont,sans-serif" font-size="6.4" font-weight="750" letter-spacing="1.2">
           <text x="${first[0] + 13}" y="${first[1] + 3}">START</text>
           <text x="${finishLabelX}" y="${last[1] + 3}" text-anchor="${finishLeft ? 'end' : 'start'}">FINISH</text>
-        </g>
-      </svg>`;
+        </g>`;
+  }
+
+  /* ---------------- v1.7.29：高德瓦片真实地图 + 真实每公里分段配速 ---------------- */
+  function tileUrl(x, y, z) {
+    /* 高德 raster 瓦片（GCJ-02，与轨迹存储坐标系一致，无需二次纠偏） */
+    const s = 1 + (Math.abs(x + y) % 4);
+    return `https://webrd0${s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x=${x}&y=${y}&z=${z}`;
+  }
+  function mercPx(lon, lat, n) {
+    /* Web Mercator 世界像素坐标（n = 256·2^z） */
+    const rad = lat * Math.PI / 180;
+    return [(lon + 180) / 360 * n, (1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2 * n];
+  }
+  function tilesReady(urls) {
+    /* 预探测全部瓦片可加载（任一失败或 4s 超时判失败）；__SX_TILES 测试钩子强制 ok/fail 保证测试确定性 */
+    if (window.__SX_TILES === 'ok') return Promise.resolve(true);
+    if (window.__SX_TILES === 'fail') return Promise.resolve(false);
+    if (!urls.length) return Promise.resolve(false);
+    return Promise.race([
+      Promise.all(urls.map(u => new Promise(res => {
+        const im = new Image();
+        im.onload = () => res(true);
+        im.onerror = () => res(false);
+        im.src = u;
+      }))).then(rs => rs.every(Boolean)),
+      new Promise(res => setTimeout(() => res(false), 4000))
+    ]);
+  }
+  function tileMapSVG(record) {
+    /* 高德瓦片拼真实历史地图底图 + 共用路线层；zoom 自 17 递减至轨迹包围盒可容纳（下限 11），放不下返回 null */
+    const w = 390, h = 368, PAD = 46;
+    const tr = record.track;
+    if (!Array.isArray(tr) || tr.length < 2) return null;
+    let z = 17, left = 0, top = 0, pts = null;
+    for (; z >= 11; z--) {
+      const n = 256 * Math.pow(2, z);
+      const px = tr.map(p => mercPx(+p[0], +p[1], n));
+      const xs = px.map(p => p[0]), ys = px.map(p => p[1]);
+      const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+      if (x1 - x0 <= w - PAD * 2 && y1 - y0 <= h - PAD * 2) {
+        left = (x0 + x1) / 2 - w / 2;
+        top = (y0 + y1) / 2 - h / 2;
+        pts = px.map(p => [p[0] - left, p[1] - top]);
+        break;
+      }
+    }
+    if (!pts) return null;
+    const tx0 = Math.floor(left / 256), tx1 = Math.floor((left + w) / 256);
+    const ty0 = Math.floor(top / 256), ty1 = Math.floor((top + h) / 256);
+    let tilesHTML = '';
+    const urls = [];
+    for (let ty = ty0; ty <= ty1; ty++) {
+      for (let tx = tx0; tx <= tx1; tx++) {
+        const u = tileUrl(tx, ty, z);
+        urls.push(u);
+        tilesHTML += `<image href="${u}" x="${(tx * 256 - left).toFixed(1)}" y="${(ty * 256 - top).toFixed(1)}" width="256" height="256" preserveAspectRatio="none"/>`;
+      }
+    }
+    const d = smoothPath(pts);
+    const first = pts[0], last = pts[pts.length - 1];
+    const finishLeft = last[0] > 312;
+    const finishLabelX = finishLeft ? last[0] - 14 : last[0] + 14;
+    return {
+      urls,
+      html: `
+      <svg class="detail-map-svg detail-map-real" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <g class="detail-base">${tilesHTML}</g>
+        <g class="detail-map-label" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif" font-size="7.6" font-weight="650" letter-spacing="1.3"><text x="27" y="62" fill="#1F2937" stroke="#FFFFFF" stroke-width="2" paint-order="stroke" opacity=".92">GPS 真实轨迹</text></g>
+        ${detailRouteLayer(d, first, last, finishLeft, finishLabelX)}
+        <text x="${w - 10}" y="${h - 8}" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,sans-serif" font-size="6.5" fill="#1F2937" stroke="#FFFFFF" stroke-width="1.6" paint-order="stroke" opacity=".75">© 高德地图</text>
+      </svg>`
+    };
+  }
+  async function maybeUpgradeTileMap(record) {
+    /* 详情打开后异步尝试升级为真实瓦片地图；失败/离线/无轨迹保持示意图，切换记录的竞态下放弃 */
+    if (!Array.isArray(record.track) || record.track.length < 2) return;
+    const built = tileMapSVG(record);
+    if (!built) return;
+    const ok = await tilesReady(built.urls);
+    if (!ok || activeRecord !== record) return;
+    const old = $('.detail-map-svg', detailHero);
+    if (!old || old.classList.contains('detail-map-real')) return;
+    old.remove();
+    detailHero.insertAdjacentHTML('afterbegin', built.html);
+    runDetailWalk(record);
+  }
+  function realSplitsOf(record) {
+    /* 真实每公里分段配速：轨迹点需全部带时间戳（[lon,lat,ts]）；haversine 累计里程 + 线性插值每公里边界时刻；末段 ≥0.2km 计 remainder 行；不满足返回 null 回退估算 */
+    const tr = record.track;
+    if (!Array.isArray(tr) || tr.length < 2) return null;
+    if (!tr.every(p => p.length >= 3 && Number.isFinite(+p[2]) && +p[2] > 0)) return null;
+    const t0 = +tr[0][2], t1 = +tr[tr.length - 1][2];
+    if (!(t1 > t0)) return null;
+    const dists = [0];
+    for (let i = 1; i < tr.length; i++) dists.push(dists[i - 1] + haversineM([+tr[i - 1][0], +tr[i - 1][1]], [+tr[i][0], +tr[i][1]]) / 1000);
+    const total = dists[dists.length - 1];
+    if (total < 0.2) return null;
+    const timeAt = km => {
+      for (let i = 1; i < dists.length; i++) {
+        if (dists[i] >= km) {
+          const r = (km - dists[i - 1]) / Math.max(1e-9, dists[i] - dists[i - 1]);
+          return +tr[i - 1][2] + (+tr[i][2] - +tr[i - 1][2]) * r;
+        }
+      }
+      return null;
+    };
+    const rows = [];
+    let prevT = t0;
+    const nFull = Math.floor(total + 1e-9);
+    for (let k = 1; k <= nFull; k++) {
+      const t = timeAt(k);
+      if (t == null) return null;
+      rows.push({ km: k, pace: t - prevT, full: true });
+      prevT = t;
+    }
+    const rem = total - nFull;
+    if (rem >= 0.2) rows.push({ km: total, pace: (t1 - prevT) / rem, full: false });
+    return { rows, total };
   }
 
   /* ------------------------------------------------------------------
@@ -5521,6 +5884,7 @@
   const posterLayer = $('#posterLayer');
   const posterImg = $('#posterImg');
   let lastPosterCanvas = null;
+  let posterSaveName = null, posterShareName = '山行-海报.png', posterShareTitle = '山行 · 轨迹海报'; /* v1.7.28：海报保存/分享动态命名——周报海报与轨迹海报共用弹层与保存链，进入时各自设名 */
 
   function posterRoundRect(ctx, rx, ry, rw, rh, rad) {
     ctx.beginPath();
@@ -5625,6 +5989,8 @@
 
   function openPoster() {
     if (!activeRecord) return;
+    posterSaveName = null; posterShareName = '山行-海报.png'; posterShareTitle = '山行 · 轨迹海报'; /* v1.7.28：恢复轨迹海报默认命名与标题 */
+    const ptEl = $('#posterTitle'); if (ptEl) ptEl.textContent = '轨迹海报';
     try {
       lastPosterCanvas = posterCanvas(activeRecord);
       posterImg.src = lastPosterCanvas.toDataURL('image/png');
@@ -5645,7 +6011,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = '山行-海报-' + (activeRecord ? activeRecord.id : '记录') + '.png';
+      a.download = posterSaveName || ('山行-海报-' + (activeRecord ? activeRecord.id : '记录') + '.png');
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -5657,14 +6023,154 @@
     if (!lastPosterCanvas || !navigator.canShare) return;
     lastPosterCanvas.toBlob(blob => {
       if (!blob) return;
-      const file = new File([blob], '山行-海报.png', { type: 'image/png' });
+      const file = new File([blob], posterShareName || '山行-海报.png', { type: 'image/png' });
       if (navigator.canShare({ files: [file] })) {
-        navigator.share({ files: [file], title: '山行 · 轨迹海报' }).catch(() => {});
+        navigator.share({ files: [file], title: posterShareTitle || '山行 · 轨迹海报' }).catch(() => {});
       } else {
         toast('当前环境不支持分享图片，请用「保存图片」');
       }
     }, 'image/png');
   });
+
+  function buildWeekPosterCanvas() { /* v1.7.28：周总结海报——本周合计里程大字 + 次数/时长/消耗/最远一天 2×2 卡 + 周目标达成率，口径随运动筛选（activeRecords） */
+    const W = 750, H = 1060;
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const x = c.getContext('2d');
+    const FONT = '"PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif';
+    const grad = x.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#F7F5EE');
+    grad.addColorStop(1, '#E9EFE1');
+    x.fillStyle = grad;
+    x.fillRect(0, 0, W, H);
+    x.fillStyle = '#2E704E';
+    x.font = '700 34px ' + FONT;
+    x.fillText('山行', 56, 88);
+    const brandW = x.measureText('山行').width;
+    x.fillStyle = '#98A092';
+    x.font = '600 20px ' + FONT;
+    x.fillText('SHANXING · 户外健走记录', 56 + brandW + 16, 86);
+    x.font = '600 21px ' + FONT;
+    x.fillText('WEEKLY REPORT', 56, 136);
+    /* 本周数据（周一起） */
+    const now = new Date();
+    const ws = weekStartTs(now), we = ws + 7 * 864e5;
+    const wk = activeRecords().filter(r => { const t = recordTsOf(r); return t >= ws && t < we; });
+    const sum = f => wk.reduce((s, r) => s + (f(r) || 0), 0);
+    const km = sum(r => r.distance);
+    const dur = sum(r => r.durationSec);
+    const kcal = Math.round(sum(r => r.kcal));
+    const byDay = {};
+    wk.forEach(r => { const k = recordDateKey(r); byDay[k] = (byDay[k] || 0) + (r.distance || 0); });
+    let bestKm = 0;
+    Object.keys(byDay).forEach(k => { if (byDay[k] > bestKm) bestKm = byDay[k]; });
+    /* 主卡：本周合计 + 目标进度条 */
+    const bx = 56, by = 170, bw = W - 112, bh = 300;
+    x.fillStyle = '#FCFBF5';
+    x.strokeStyle = 'rgba(31,42,34,.08)';
+    x.lineWidth = 2;
+    posterRoundRect(x, bx, by, bw, bh, 22);
+    x.fill(); x.stroke();
+    x.fillStyle = '#98A092';
+    x.font = '600 22px ' + FONT;
+    x.fillText('本周合计', bx + 36, by + 76);
+    x.fillStyle = '#1F2A22';
+    x.font = '800 96px ' + FONT;
+    const kmTxt = km.toFixed(2);
+    x.fillText(kmTxt, bx + 36, by + 180);
+    const kmW = x.measureText(kmTxt).width;
+    x.font = '700 34px ' + FONT;
+    x.fillStyle = '#98A092';
+    x.fillText('公里', bx + 36 + kmW + 14, by + 180);
+    x.font = '600 22px ' + FONT;
+    x.fillText(wk.length + ' 次记录 · ' + fmtRangeDate(ws) + ' – ' + fmtRangeDate(we - 864e5), bx + 36, by + 232);
+    /* 周目标（goalOfWeek 口径，与目标卡一致） */
+    const g = goalOfWeek(ws);
+    const isSteps = g.type === 'steps';
+    const target = isSteps ? (g.steps || 0) : (g.distance || 0);
+    const got = isSteps ? sum(r => r.steps) : km;
+    const pct = target > 0 ? Math.min(999, Math.round(got / target * 100)) : null;
+    const tw = bw - 72;
+    posterRoundRect(x, bx + 36, by + 262, tw, 14, 7);
+    x.fillStyle = 'rgba(31,42,34,.08)';
+    x.fill();
+    if (pct != null && pct > 0) {
+      const fw = Math.max(14, tw * Math.min(100, pct) / 100);
+      posterRoundRect(x, bx + 36, by + 262, fw, 14, 7);
+      x.fillStyle = '#2E704E';
+      x.fill();
+    }
+    /* 2×2 数据卡：次数 / 时长 / 消耗 / 最远一天 */
+    const stats = [
+      [String(wk.length), '本周次数'],
+      [formatDuration(dur), '合计时长'],
+      [fmtNum(kcal), '消耗 kcal'],
+      [bestKm > 0 ? bestKm.toFixed(1) : '0.0', '最远一天 km']
+    ];
+    const cardW = (W - 112) / 2 - 10;
+    stats.forEach((st, i) => {
+      const sx = 56 + (i % 2) * (cardW + 16);
+      const sy = 500 + Math.floor(i / 2) * 142;
+      x.fillStyle = '#FCFBF5';
+      posterRoundRect(x, sx, sy, cardW, 118, 18);
+      x.fill();
+      x.strokeStyle = 'rgba(31,42,34,.07)'; x.lineWidth = 2; x.stroke();
+      x.fillStyle = '#1F2A22';
+      x.font = '800 34px ' + FONT;
+      x.fillText(st[0], sx + 22, sy + 64);
+      x.fillStyle = '#98A092';
+      x.font = '600 19px ' + FONT;
+      x.fillText(st[1], sx + 22, sy + 94);
+    });
+    /* 达成率大卡 */
+    const gy = 790, gh = 160;
+    x.fillStyle = '#FCFBF5';
+    posterRoundRect(x, 56, gy, W - 112, gh, 22);
+    x.fill();
+    x.strokeStyle = 'rgba(31,42,34,.08)'; x.lineWidth = 2; x.stroke();
+    x.fillStyle = '#98A092';
+    x.font = '600 22px ' + FONT;
+    x.fillText('WEEK GOAL', 56 + 36, gy + 54);
+    x.fillStyle = '#1F2A22';
+    x.font = '800 64px ' + FONT;
+    const goalTxt = pct == null ? '未设置' : pct + '%';
+    x.fillText(goalTxt, 56 + 36, gy + 124);
+    x.fillStyle = '#98A092';
+    x.font = '600 20px ' + FONT;
+    const goalSub = pct == null ? '设置周目标后展示达成率' : (isSteps ? fmtNum(Math.round(got)) + ' / ' + fmtNum(target) + ' 步' : got.toFixed(1) + ' / ' + target + ' km');
+    const gsW = x.measureText(goalSub).width;
+    x.fillText(goalSub, W - 56 - 36 - gsW, gy + 124);
+    /* 页脚 */
+    x.strokeStyle = 'rgba(31,42,34,.12)';
+    x.lineWidth = 2;
+    x.beginPath(); x.moveTo(56, H - 44); x.lineTo(W - 56, H - 44); x.stroke();
+    x.fillStyle = '#98A092';
+    x.font = '600 19px ' + FONT;
+    x.fillText('山行 · 记录你走过的每一段路', 56, H - 16);
+    const dstr = fmtRangeDate(ws) + ' – ' + fmtRangeDate(we - 864e5);
+    x.fillText(dstr, W - 56 - x.measureText(dstr).width, H - 16);
+    return c;
+  }
+
+  function openWeekPoster() { /* v1.7.28：周总结海报入口——统计页「活跃热力」卡头部「周报海报」按钮，复用海报弹层（标题/文件名动态） */
+    try {
+      lastPosterCanvas = buildWeekPosterCanvas();
+      posterImg.src = lastPosterCanvas.toDataURL('image/png');
+    } catch (e) {
+      toast('海报生成失败，请重试');
+      return;
+    }
+    const d = new Date();
+    posterSaveName = '山行-周报-' + d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate()) + '.png';
+    posterShareName = '山行-周报.png';
+    posterShareTitle = '山行 · 本周总结';
+    const tEl = $('#posterTitle'); if (tEl) tEl.textContent = '本周总结海报';
+    const shareBtn = $('#posterShareBtn');
+    if (shareBtn) shareBtn.hidden = !navigator.canShare;
+    openModal(posterLayer);
+  }
+  $('#weekPosterBtn')?.addEventListener('click', openWeekPoster);
+  $('#yearBoardBtn')?.addEventListener('click', () => { renderYearBoard(); openModal($('#yearBoardLayer')); }); /* v1.7.34：年度看板——打开时按最新记录与筛选口径渲染 */
 
   /* ------------------------------------------------------------------
      高级筛选（v1.5.0）：时间范围 × 里程 × 路线地点
@@ -5870,9 +6376,43 @@
   }
 
   let lastHistoryHtml = null; /* v1.6.3：列表渲染签名——内容未变时（重复点击当前标签等）跳过 DOM 重建，入场动画不重放，消除刷新闪烁 */
+  /* v1.7.19：轨迹页运动类型筛选（步行/骑行/全部）——切换后统计页与我的页数据同步按所选类型重算 */
+  let sportFilter = (() => { try { const v = localStorage.getItem('shanxing:sportFilter'); return v === 'walk' || v === 'ride' ? v : 'all'; } catch (e) { return 'all'; } })();
+  function sportOf(r) { return r.sport === 'ride' ? 'ride' : 'walk'; }
+  function activeRecords() { return sportFilter === 'all' ? records : records.filter(r => sportOf(r) === sportFilter); }
+  const SF_NEXT = { all: 'walk', walk: 'ride', ride: 'all' }; /* v1.7.22：单按钮循环切换顺序 全部→步行→骑行→全部 */
+  const SF_NAME = { all: '全部', walk: '步行', ride: '骑行' };
+  function syncSportFilterUI() {
+    $$('.sf-cycle').forEach(btn => {
+      const cur = SF_NAME[sportFilter] || '全部', next = SF_NEXT[sportFilter] || 'walk';
+      btn.querySelector('.sf-cycle-label').textContent = cur;
+      btn.classList.toggle('filtered', sportFilter !== 'all'); /* 非全量时主题色高亮提示已筛选 */
+      btn.setAttribute('aria-label', '运动类型筛选：' + cur + '，点击切换为' + SF_NAME[next]);
+    });
+    $$('.sport-pill').forEach(p => { /* v1.7.27：筛选口径小标签常显（仅统计页累计卡/月度对比卡两处）——全部口径显示「全部」，切步行/骑行显示对应口径 */
+      p.hidden = false;
+      p.textContent = SF_NAME[sportFilter] || '全部';
+    });
+  }
+  function applySportFilter(v) {
+    if (v !== 'all' && v !== 'walk' && v !== 'ride') return;
+    sportFilter = v;
+    try { localStorage.setItem('shanxing:sportFilter', v); } catch (e) {}
+    syncSportFilterUI();
+    renderHistory(currentFilter);
+    renderStats();
+    replayBars();
+    renderAwardProgress();
+    renderCumulativeStats();
+    renderBestRecords();
+    updateLevelUI();
+  }
+  $$('.sf-cycle').forEach(btn => btn.addEventListener('click', () => applySportFilter(SF_NEXT[sportFilter] || 'walk'))); /* v1.7.22：单按钮点击循环切换 */
+  syncSportFilterUI(); /* 启动即按持久化筛选同步高亮 */
+
   function renderHistory(filter = currentFilter) {
     currentFilter = filter;
-    const list = applySort(records.filter(r => {
+    const list = applySort(activeRecords().filter(r => {
       if (filter === 'week') return r.week;
       if (filter === 'month') return r.month;
       if (filter === 'year') return r.year !== false;
@@ -5880,7 +6420,7 @@
     }).filter(matchesQuery).filter(matchesAdv));
     lastList = list; /* v1.5.27：同步当前渲染列表 */
     updateSearchNote(list.length);
-    $$('.filter-btn').forEach(btn => {
+    $$('#historyScreen .filter-btn').forEach(btn => { /* v1.7.21：限定轨迹页——统计页页头运动切换组复用 filter-btn 样式，无 data-filter，不参与时间筛选高亮 */
       const active = btn.dataset.filter === filter;
       btn.classList.toggle('active', active);
       btn.setAttribute('aria-pressed', String(active));
@@ -5891,7 +6431,9 @@
         ? `<div class="empty-list"><strong>没有匹配的轨迹</strong>没有找到与「${escapeHTML(searchQuery)}」相关的记录，换个关键词试试。</div>`
         : activeAdvCount()
           ? '<div class="empty-list"><strong>没有符合筛选的轨迹</strong>放宽筛选条件，或点「筛选」重置后再看。</div>'
-          : '<div class="empty-list"><strong>这里还没有轨迹</strong>换一个时间范围，或者出门走走吧。</div>')
+          : sportFilter !== 'all'
+            ? `<div class="empty-list"><strong>暂无${sportFilter === 'ride' ? '骑行' : '步行'}轨迹</strong>先切换回「全部」看看所有记录，或者出门走走吧。</div>`
+            : '<div class="empty-list"><strong>这里还没有轨迹</strong>换一个时间范围，或者出门走走吧。</div>')
       : list.map((r, i) => `
       <button class="route-card${batchMode ? ' multi' : ''}${batchMode && batchSel.has(r.id) ? ' selected' : ''}" data-record="${r.id}" style="animation-delay:${i * 45}ms" aria-label="${batchMode ? '选择' : '查看'} ${escapeHTML(r.title)} 这条轨迹${batchMode ? '' : '的详情'}">
         ${batchMode ? '<span class="batch-check" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>' : ''}
@@ -5911,7 +6453,7 @@
           <div class="route-meta">
             <span>${fmtPaceSeconds(paceSeconds(r.durationSec, r.distance))}/km</span><i></i>
             <span>${fmtNum(r.kcal)} 千卡</span><i></i>
-            <span>${fmtNum(r.steps)} 步</span>
+            <span>${r.sport === 'ride' ? '骑行' : fmtNum(r.steps) + ' 步'}</span> /* v1.7.18 */
           </div>
         </div>
         <div class="route-thumb">
@@ -5928,10 +6470,11 @@
   }
 
   function updateHistorySummary() {
-    const monthRecords = records.filter(r => r.month);
+    const monthRecords = activeRecords().filter(r => r.month);
     const total = monthRecords.reduce((sum, r) => sum + r.distance, 0);
     historyCount.textContent = monthRecords.length;
     historyDistance.textContent = total.toFixed(1);
+    const clEl = $('#historyCountLabel'); if (clEl) clEl.textContent = sportFilter === 'ride' ? '次骑行' : sportFilter === 'walk' ? '次步行' : '次行走'; /* v1.7.19 */
     const mEl = $('#historyMonth'); /* v1.5.40：月份标签改按当前月份动态渲染（原「10 月」为静态演示值） */
     if (mEl) mEl.textContent = `${new Date().getMonth() + 1} 月`;
   }
@@ -6207,7 +6750,7 @@
     openModal(trashLayer);
   });
 
-  $$('.filter-btn').forEach(btn => {
+  $$('#historyScreen .filter-btn').forEach(btn => { /* v1.7.21：限定轨迹页时间筛选按钮；v1.7.22 起统计页无 filter-btn，保留作用域以防回归 */
     btn.addEventListener('click', () => renderHistory(btn.dataset.filter));
   });
 
@@ -6374,7 +6917,10 @@
     const base = paceSeconds(record.durationSec, record.distance);
     const offsets = [-8, -3, 5, 11, -4, 2];
     const paces = [];
-    for (let i = 0; i < splitCount; i++) paces.push(clamp(base + offsets[i % offsets.length], 480, 980));
+    /* v1.7.29：有真实分段配速时按实测值加权回放速度，不足的段回退平均配速估算 */
+    const realSp = realSplitsOf(record);
+    if (realSp) for (let i = 0; i < splitCount && i < realSp.rows.length; i++) paces.push(clamp(realSp.rows[i].pace, 480, 980));
+    for (let i = paces.length; i < splitCount; i++) paces.push(clamp(base + offsets[i % offsets.length], 480, 980));
     const totalW = paces.reduce((a, b) => a + b, 0);
     /* normalized time t -> normalized path position u, segment speed ∝ 1/pace */
     const segU = 1 / splitCount;
@@ -6417,6 +6963,7 @@
     if (oldSvg) oldSvg.remove();
     detailHero.insertAdjacentHTML('afterbegin', detailMapSVG(record));
     runDetailWalk(record);
+    maybeUpgradeTileMap(record); /* v1.7.29：异步升级真实瓦片地图（失败保持示意图） */
 
     $('#detailDate').textContent = record.eyebrow;
     $('#detailTitle').textContent = record.title;
@@ -6427,7 +6974,7 @@
       { icon: 'i-route', label: '距离', value: record.distance.toFixed(2), unit: 'km' },
       { icon: 'i-clock', label: '时长', value: formatDuration(record.durationSec), unit: '' },
       { icon: 'i-trend', label: '平均配速', value: pace, unit: '/km' },
-      { icon: 'i-steps', label: '步数', value: fmtNum(record.steps), unit: '步' }
+      { icon: 'i-steps', label: '步数', value: record.sport === 'ride' ? '—' : fmtNum(record.steps), unit: record.sport === 'ride' ? '' : '步' }
     ];
     detailStats.innerHTML = stats.map(s => `
       <div class="detail-stat">
@@ -6437,24 +6984,47 @@
     `).join('');
 
     detailChips.innerHTML = `
+      ${record.sport === 'ride' ? '<div class="detail-chip"><span>运动模式</span><b>骑行</b></div>' : ''}
       <div class="detail-chip"><span>累计爬升</span><b>${record.elevation} m</b></div>
       <div class="detail-chip"><span>消耗热量</span><b>${fmtNum(record.kcal)} kcal</b></div>
     `;
 
-    const splitCount = Math.min(5, Math.max(1, Math.ceil(record.distance)));
-    const base = paceSeconds(record.durationSec, record.distance);
-    const offsets = [-8, -3, 5, 11, -4, 2];
+    /* v1.7.29：分段配速真实优先——带时间戳轨迹按实测每公里渲染（末段不足整公里按实际里程），否则回退平均配速估算并显式标注 */
+    const sn = $('#splitsNote');
+    const realSp = realSplitsOf(record);
     let splitHTML = '';
-    for (let i = 0; i < splitCount; i++) {
-      const sp = clamp(base + offsets[i % offsets.length], 480, 980);
-      const width = clamp(38 + (sp - 600) / 4, 38, 94);
-      const splitLabel = splitCount === 1 ? record.distance.toFixed(1) : String(i + 1);
-      splitHTML += `
+    if (realSp) {
+      const rows = realSp.rows.slice(0, 5);
+      const cps = rows.map(r => clamp(r.pace, 480, 980));
+      const minP = Math.min(...cps), maxP = Math.max(...cps);
+      const span = Math.max(1, maxP - minP);
+      rows.forEach((r, i) => {
+        const width = clamp(38 + 56 * (cps[i] - minP) / span, 38, 94);
+        const splitLabel = rows.length === 1 ? r.km.toFixed(1) : (r.full ? String(i + 1) : r.km.toFixed(1));
+        splitHTML += `
+        <div class="split-row">
+          <span class="split-km">${splitLabel}</span>
+          <div class="split-bar"><i style="width:${width.toFixed(1)}%;animation-delay:${i * 55}ms"></i></div>
+          <span class="split-pace">${fmtPaceSeconds(cps[i])}</span>
+        </div>`;
+      });
+      if (sn) sn.textContent = '每公里 · GPS 实测';
+    } else {
+      const splitCount = Math.min(5, Math.max(1, Math.ceil(record.distance)));
+      const base = paceSeconds(record.durationSec, record.distance);
+      const offsets = [-8, -3, 5, 11, -4, 2];
+      for (let i = 0; i < splitCount; i++) {
+        const sp = clamp(base + offsets[i % offsets.length], 480, 980);
+        const width = clamp(38 + (sp - 600) / 4, 38, 94);
+        const splitLabel = splitCount === 1 ? record.distance.toFixed(1) : String(i + 1);
+        splitHTML += `
         <div class="split-row">
           <span class="split-km">${splitLabel}</span>
           <div class="split-bar"><i style="width:${width.toFixed(1)}%;animation-delay:${i * 55}ms"></i></div>
           <span class="split-pace">${fmtPaceSeconds(sp)}</span>
         </div>`;
+      }
+      if (sn) sn.textContent = '每公里 · 按平均配速估算';
     }
     detailSplits.innerHTML = splitHTML;
     renderDiary(record);
@@ -6584,7 +7154,7 @@
   function awardTierOf(n, km) { return Math.min(4, Math.max(countTierOf(n), Math.floor(km / 20))); }
   function weekAwardStats(now) {
     const ws = weekStartTs(now);
-    const weekRecs = records.filter(r => recordTsOf(r) >= ws);
+    const weekRecs = activeRecords().filter(r => recordTsOf(r) >= ws); /* v1.7.19：按运动类型筛选 */
     return { ws, weekRecs, n: weekRecs.length, km: weekRecs.reduce((s, r) => s + (r.distance || 0), 0) };
   }
   /* v1.5.24：统计页「本周称号」卡——一周趋势预览 + 每周一自动重算 */
@@ -6598,7 +7168,7 @@
     $('#awardWeekRange').textContent = fmt(ws) + ' — ' + fmt(ws + 6 * 864e5);
     const { n } = weekAwardStats(now);
     /* v1.5.33：档位取次数档与里程档较高者——次数按本周（含演示口径与 v1.5.23 一致），里程按全部时间累计（每 20 km 一档） */
-    const tk = records.reduce((s, r) => s + (r.distance || 0), 0);
+    const tk = activeRecords().reduce((s, r) => s + (r.distance || 0), 0); /* v1.7.19 */
     const tier = awardTierOf(n, tk);
     const award = AWARD_TIERS[tier];
     $('#awardNowName').textContent = award.name;
@@ -6623,8 +7193,8 @@
       const d = new Date(dayTs);
       const dayKey = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
       /* v1.5.33：趋势逐日档位 = 次数档（该日为止本周累计次数）与里程档（该日之前含当日全部记录合计，每 20 km 一档）取较高者 */
-      ck = records.filter(r => recordTsOf(r) < dayTs + 864e5).reduce((s, r) => s + (r.distance || 0), 0);
-      cn = records.filter(r => recordTsOf(r) >= ws && recordTsOf(r) < dayTs + 864e5).length;
+      ck = activeRecords().filter(r => recordTsOf(r) < dayTs + 864e5).reduce((s, r) => s + (r.distance || 0), 0); /* v1.7.19 */
+      cn = activeRecords().filter(r => recordTsOf(r) >= ws && recordTsOf(r) < dayTs + 864e5).length; /* v1.7.19 */
       const isToday = dayKey === todayKey, isFuture = dayTs > now.getTime();
       const t = awardTierOf(cn, ck);
       html += `<div class="aw-day${isToday ? ' today' : ''}${isFuture ? ' future' : ''}">`
@@ -6648,7 +7218,7 @@
     return `<svg class="icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${BEST_ICONS[key] || ''}</svg>`;
   }
   function bestStats() {
-    const recs = records.slice();
+    const recs = activeRecords().slice(); /* v1.7.19 */
     const by = fn => recs.reduce((best, r) => {
       const v = fn(r);
       if (!(v > 0)) return best;
@@ -6727,7 +7297,7 @@
     $('#finishDistance').textContent = state.distance.toFixed(2);
     $('#finishDuration').textContent = formatDuration(state.elapsed);
     $('#finishPace').textContent = formatPace(state.elapsed, state.distance);
-    $('#finishSteps').textContent = fmtNum(state.steps);
+    $('#finishSteps').textContent = state.sport === 'ride' ? '—' : fmtNum(state.steps);
     $('#finishKcal').textContent = fmtNum(state.kcal);
     const now = new Date();
     $('#finishSub').textContent = `${now.getMonth() + 1}月${now.getDate()}日 · ${WEEKDAY_CN[now.getDay()]} · 西湖`;
@@ -6751,13 +7321,18 @@
     if (state.started) syncPauseUI();
   }
 
-  $('#finishClose').addEventListener('click', closeFinishSheet);
-
   let savePending = false;
-  $('#saveBtn').addEventListener('click', async () => {
+  /* v1.7.37：完成弹层自动保存——点保存、点 X、Esc 退出都自动保存记录，仅「放弃本次记录」按钮不保存 */
+  async function finishSave(fromClose) {
     if (savePending) return;
-    if (state.distance < 0.05) {
-      toast('这一段还太短，再走一会儿吧');
+    if (state.distance < 0.05) { /* 太短守卫：自动退出路径不保存但正常关层复位；显式保存则提示后留在弹层 */
+      if (fromClose) {
+        closeFinishSheet();
+        resetRecorder();
+        toast('这一段太短，未保存');
+      } else {
+        toast('这一段还太短，再走一会儿吧');
+      }
       return;
     }
     savePending = true;
@@ -6780,7 +7355,7 @@
       }
     }
     /* v1.7.15：安卓原生环境优先用 Health Connect 本次录制时段的真实步数（失败回退估算） */
-    const hcReal = await hcStepsBetween(Date.now() - state.elapsed * 1000, Date.now());
+    const hcReal = state.sport === 'ride' ? null : await hcStepsBetween(Date.now() - state.elapsed * 1000, Date.now()); /* v1.7.18：骑行不采信 HC 步数 */
     if (hcReal != null && hcReal > 0) state.steps = hcReal;
     const newRecord = {
       id: `walk-${Date.now()}`,
@@ -6794,6 +7369,7 @@
       distance: Number(state.distance.toFixed(2)),
       durationSec: state.elapsed,
       steps: state.steps,
+      sport: state.sport, /* v1.7.18：运动模式随记录存档 */
       kcal: state.kcal,
       elevation: 12 + Math.round(state.distance * 3),
       week: true,
@@ -6811,7 +7387,7 @@
       const simp = [];
       for (let i = 0; i < tr.length; i += stride) simp.push(tr[i]);
       if (simp[simp.length - 1] !== tr[tr.length - 1]) simp.push(tr[tr.length - 1]);
-      newRecord.track = simp.map(p => [Math.round(p[0] * 1e5) / 1e5, Math.round(p[1] * 1e5) / 1e5]);
+      newRecord.track = simp.map(p => { const q = [Math.round(p[0] * 1e5) / 1e5, Math.round(p[1] * 1e5) / 1e5]; if (p.length >= 3 && Number.isFinite(+p[2]) && +p[2] > 0) q.push(Math.round(+p[2])); return q; }); /* v1.7.29：抽稀存档保留各点时间戳 */
     }
     records.unshift(newRecord);
     persistRecords();
@@ -6820,11 +7396,17 @@
     closeFinishSheet();
     resetRecorder();
     currentFilter = 'all';
-    renderHistory('all');
-    go('history');
+    renderHistory('all'); /* 预刷新轨迹页数据但不跳转 */
+    /* v1.7.37：保存后停留在「记录」页，不再跳「轨迹」页；补刷首页今日已走/称号进度/目标卡 */
+    updateReadyToday();
+    renderAwardProgress();
+    if (typeof updateGoalCard === 'function') updateGoalCard();
     setTimeout(() => toast('轨迹已保存，今天也很棒'), 320);
     } finally { savePending = false; }
-  });
+  }
+
+  $('#saveBtn').addEventListener('click', () => finishSave(false));
+  $('#finishClose').addEventListener('click', () => finishSave(true)); /* v1.7.37：点 X 自动保存 */
 
   $('#discardBtn').addEventListener('click', () => {
     closeFinishSheet();
@@ -7000,7 +7582,7 @@
     return cur > 0 ? '新增' : '—';
   }
   function sumRecordDistance(from, to) {
-    return records.reduce((s, r) => { const t = recordTsOf(r); return t >= from && t < to ? s + (r.distance || 0) : s; }, 0);
+    return activeRecords().reduce((s, r) => { const t = recordTsOf(r); return t >= from && t < to ? s + (r.distance || 0) : s; }, 0); /* v1.7.19：按运动类型筛选 */
   }
   function buildPeriodBars(period) {
     const now = new Date();
@@ -7065,6 +7647,165 @@
     };
   }
 
+  function renderMonthCompare() { /* v1.7.25：月度对比卡——本月 vs 上月（里程/次数/消耗），口径随运动筛选（activeRecords） */
+    const now = new Date();
+    const inMonth = (r, y, m) => { const d = new Date(recordTsOf(r)); return d.getFullYear() === y && d.getMonth() === m; };
+    const cur = activeRecords().filter(r => inMonth(r, now.getFullYear(), now.getMonth()));
+    const pn = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const prev = activeRecords().filter(r => inMonth(r, pn.getFullYear(), pn.getMonth()));
+    const sum = (arr, f) => arr.reduce((s, r) => s + (f(r) || 0), 0);
+    const row = (key, curV, prevV, fmt, unit) => {
+      const set = (id, html) => { const el = $('#' + id); if (el) el.innerHTML = html; };
+      set('mc' + key, fmt(curV) + '<small>' + unit + '</small>');
+      const lastEl = $('#mc' + key + 'Last'); if (lastEl) lastEl.textContent = '上月 ' + fmt(prevV) + ' ' + unit;
+      const dEl = $('#mc' + key + 'Delta');
+      if (dEl) {
+        const d = curV - prevV;
+        dEl.className = 'month-delta ' + (d > 0 ? 'up' : d < 0 ? 'down' : 'flat');
+        dEl.textContent = d > 0 ? '▲ +' + fmt(d) : d < 0 ? '▼ −' + fmt(-d) : '持平';
+      }
+    };
+    row('Km', sum(cur, r => r.distance), sum(prev, r => r.distance), v => v.toFixed(1), 'km');
+    row('N', cur.length, prev.length, v => String(v), '次');
+    row('Kcal', Math.round(sum(cur, r => r.kcal)), Math.round(sum(prev, r => r.kcal)), v => fmtNum(v), 'kcal');
+  }
+
+  function renderYearCompare() { /* v1.7.33：年度对比卡——本年至今 vs 去年同期（去年 1 月 1 日 ~ 去年今日），里程/次数/消耗，口径随运动筛选（activeRecords） */
+    const now = new Date();
+    const cur = activeRecords().filter(r => { const d = new Date(recordTsOf(r)); return d.getFullYear() === now.getFullYear(); });
+    const prevFrom = new Date(now.getFullYear() - 1, 0, 1).getTime();
+    const prevTo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate() + 1).getTime(); /* 去年今日次日零点——含去年今日全天 */
+    const prev = activeRecords().filter(r => { const t = recordTsOf(r); return t >= prevFrom && t < prevTo; });
+    const sum = (arr, f) => arr.reduce((s, r) => s + (f(r) || 0), 0);
+    const row = (key, curV, prevV, fmt, unit) => {
+      const set = (id, html) => { const el = $('#' + id); if (el) el.innerHTML = html; };
+      set('yc' + key, fmt(curV) + '<small>' + unit + '</small>');
+      const lastEl = $('#yc' + key + 'Last'); if (lastEl) lastEl.textContent = '去年同期 ' + fmt(prevV) + ' ' + unit;
+      const dEl = $('#yc' + key + 'Delta');
+      if (dEl) {
+        const d = curV - prevV;
+        dEl.className = 'month-delta ' + (d > 0 ? 'up' : d < 0 ? 'down' : 'flat');
+        dEl.textContent = d > 0 ? '▲ +' + fmt(d) : d < 0 ? '▼ −' + fmt(-d) : '持平';
+      }
+    };
+    row('Km', sum(cur, r => r.distance), sum(prev, r => r.distance), v => v.toFixed(1), 'km');
+    row('N', cur.length, prev.length, v => String(v), '次');
+    row('Kcal', Math.round(sum(cur, r => r.kcal)), Math.round(sum(prev, r => r.kcal)), v => fmtNum(v), 'kcal');
+  }
+
+  function renderYearBoard() { /* v1.7.34：年度运动看板——本年逐月里程柱状图 + 6 项年度总览瓦片（总里程/总次数/总时长/总消耗/最远单次/累计步数），口径随运动筛选（activeRecords），打开弹层时按最新数据渲染 */
+    const bodyEl = $('#yearBoardBody'); if (!bodyEl) return;
+    const now = new Date(); const y = now.getFullYear();
+    const recs = activeRecords().filter(r => new Date(recordTsOf(r)).getFullYear() === y);
+    const sum = f => recs.reduce((s, r) => s + (f(r) || 0), 0);
+    const km = sum(r => r.distance), n = recs.length, sec = sum(r => r.durationSec);
+    const kcal = Math.round(sum(r => r.kcal)), steps = sum(r => r.steps);
+    const far = recs.reduce((m, r) => Math.max(m, r.distance || 0), 0);
+    const mk = new Array(12).fill(0);
+    recs.forEach(r => { mk[new Date(recordTsOf(r)).getMonth()] += (r.distance || 0); });
+    const maxM = Math.max(...mk, 0.01);
+    const bars = mk.map((v, i) => '<div class="yb-col"><span class="yb-val">' + (v > 0 ? v.toFixed(1) : '') + '</span><div class="yb-bar' + (v > 0 ? '' : ' zero') + '" style="height:' + (v > 0 ? Math.max(5, Math.round(v / maxM * 72)) : 3) + 'px"></div><span class="yb-mon">' + (i + 1) + '月</span></div>').join('');
+    const tile = (label, val, unit) => '<div class="yb-tile"><span>' + label + '</span><strong>' + val + (unit ? '<small>' + unit + '</small>' : '') + '</strong></div>';
+    const h = Math.floor(sec / 3600), mn = Math.round(sec % 3600 / 60);
+    const dur = (h > 0 ? h + ' 时 ' : '') + (mn > 0 ? mn + ' 分' : (h > 0 ? '' : '0'));
+    const pillEl = $('#ycSportPill');
+    const subEl = $('#yearBoardSub');
+    if (subEl) subEl.textContent = y + ' 年运动数据总览 · 口径：' + (pillEl ? pillEl.textContent : '全部');
+    bodyEl.innerHTML = '<div class="yb-tiles">' + tile('总里程', km.toFixed(1), 'km') + tile('总次数', String(n), '次') + tile('总时长', dur, '') + tile('总消耗', fmtNum(kcal), 'kcal') + tile('最远单次', far.toFixed(1), 'km') + tile('累计步数', fmtNum(steps), '步') + '</div><p class="yb-sub">' + y + ' 年逐月里程（km）</p><div class="yb-bars">' + bars + '</div>';
+  }
+
+  function renderHeatmap() { /* v1.7.33：日历式月块——每月独立 mini 日历（月标签居中 + 一~日星期头 + 周一到周日一行 7 格），12 个月横排、拖拽/滚轮可滑；今日描边、未来日与月头余位留空不补位、默认滚到本周、口径随运动筛选联动保留；v1.7.28：全年活跃热力图——按当日里程 5 档着色（0 / ≤3 / ≤6 / ≤10 / >10 km） */
+    const gridEl = $('#heatGrid'); if (!gridEl) return;
+    const now = new Date();
+    const dkey = t => { const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+    const todayKey = dkey(now.getTime());
+    const dayMap = {};
+    activeRecords().forEach(r => { const k = recordDateKey(r); dayMap[k] = (dayMap[k] || 0) + (r.distance || 0); });
+    const monthAgg = {}; /* v1.7.34：逐月聚合（悬浮明细口径）——活跃天数/次数/里程/时长，与热力着色同源（activeRecords 随运动筛选联动、含演示记录） */
+    activeRecords().forEach(r => {
+      const t = recordTsOf(r); const d = new Date(t); const k = d.getFullYear() + '-' + d.getMonth();
+      if (!monthAgg[k]) monthAgg[k] = { days: 0, n: 0, km: 0, sec: 0, seen: {} };
+      const a = monthAgg[k]; const dk = recordDateKey(r);
+      if (!a.seen[dk]) { a.seen[dk] = 1; a.days++; }
+      a.n++; a.km += (r.distance || 0); a.sec += (r.durationSec || 0);
+    });
+    const lv = km => km <= 0 ? 0 : km <= 3 ? 1 : km <= 6 ? 2 : km <= 10 ? 3 : 4;
+    let html = '', lastYear = -1, activeDays = 0, totalKm = 0;
+    for (let m = 11; m >= 0; m--) { /* v1.7.33：按月循环生成 12 个日历式月块（去年下月 → 本月） */
+      const first = new Date(now.getFullYear(), now.getMonth() - m, 1); /* 该月 1 号 */
+      const y = first.getFullYear(), mo = first.getMonth();
+      const daysInMonth = new Date(y, mo + 1, 0).getDate(); /* 该月天数（1 号走到月末最后一天） */
+      const offset = (first.getDay() + 6) % 7; /* 1 号前余位（周一=0 … 周日=6）——月头留空不补位 */
+      const ma = monthAgg[y + '-' + mo] || { days: 0, n: 0, km: 0, sec: 0 }; /* v1.7.34：该月聚合（悬浮明细） */
+      const mh = Math.floor(ma.sec / 3600), mmin = Math.round(ma.sec % 3600 / 60);
+      const durTxt = ma.sec > 0 ? ((mh > 0 ? mh + ' 时 ' : '') + (mmin > 0 ? mmin + ' 分' : '')).trim() : '';
+      const summary = y + '年' + (mo + 1) + '月 · 活跃 ' + ma.days + ' 天 · ' + ma.n + ' 次 · ' + ma.km.toFixed(1) + ' km' + (durTxt ? ' · ' + durTxt : ''); /* v1.7.34：悬浮明细文案 */
+      let cells = '';
+      for (let i = 0; i < offset; i++) cells += '<i class="heat-cell empty" aria-hidden="true"></i>';
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dt = new Date(y, mo, d);
+        const k = dkey(dt.getTime());
+        if (k > todayKey) { cells += '<i class="heat-cell empty"></i>'; continue; } /* 本月未来日期留空 */
+        const km = dayMap[k] || 0;
+        if (km > 0) { activeDays++; totalKm += km; }
+        cells += '<i class="heat-cell l' + lv(km) + (k === todayKey ? ' today' : '') + '" title="' + (mo + 1) + '月' + d + '日 · ' + (km > 0 ? km.toFixed(1) + ' km' : '无记录') + '"></i>';
+      }
+      const label = (y !== lastYear ? String(y).slice(2) + '年' : '') + (mo + 1) + '月'; /* 每年首月带「YY年」前缀，月标签居中于月块 */
+      lastYear = y;
+      html += '<div class="heat-month" data-summary="' + summary + '"><div class="heat-mlabel">' + label + '</div><div class="heat-wd" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class="heat-mgrid">' + cells + '</div></div>';
+    }
+    gridEl.innerHTML = html;
+    const nEl = $('#heatNote'); if (nEl) nEl.textContent = '近一年 ' + activeDays + ' 天有记录 · 共 ' + totalKm.toFixed(1) + ' km';
+    gridEl.setAttribute('aria-label', '全年活跃热力图，近一年 ' + activeDays + ' 天有记录，合计 ' + totalKm.toFixed(1) + ' 公里');
+    const wrap = $('#heatScroll'); if (wrap) wrap.scrollLeft = wrap.scrollWidth; /* 默认滚动到本周（最右） */
+  }
+
+  (function bindHeatDrag() { /* v1.7.33：热力图拖拽滑动 + 滚轮横滚——修复「还是无法滑动看以前的数据」：overflow 滚动本身正常，但桌面预览鼠标既拖不动、滚轮又是纵向的；pointer 拖拽通吃鼠标与触摸，滚轮纵向增量转横向滚动 */
+    const wrap = $('#heatScroll'); if (!wrap) return;
+    let down = false, startX = 0, startLeft = 0;
+    wrap.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      down = true; startX = e.clientX; startLeft = wrap.scrollLeft;
+      wrap.classList.add('dragging');
+      try { e.preventDefault(); } catch (err) {} /* 阻止文本选择与原生拖动 */
+      if (wrap.setPointerCapture) { try { wrap.setPointerCapture(e.pointerId); } catch (err) {} }
+    });
+    wrap.addEventListener('pointermove', e => { if (!down) return; wrap.scrollLeft = startLeft - (e.clientX - startX); });
+    const end = () => { down = false; wrap.classList.remove('dragging'); };
+    wrap.addEventListener('pointerup', end);
+    wrap.addEventListener('pointercancel', end);
+    wrap.addEventListener('wheel', e => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; /* 已是横向滚动（触控板横滑）则不干预 */
+      const before = wrap.scrollLeft;
+      wrap.scrollLeft = before + e.deltaY;
+      if (wrap.scrollLeft !== before) e.preventDefault(); /* 未到边界吃掉纵向滚动，到边界放行回页面 */
+    }, { passive: false });
+  })();
+
+  (function bindHeatTip() { /* v1.7.34：热力图月块悬浮明细——月块 hover/触摸浮出该月汇总（活跃天数/次数/里程/时长）；fixed 气泡不受滚动容器裁切，拖拽中不弹、指针离开即收 */
+    const wrap = $('#heatScroll'); const tip = $('#heatTip'); if (!wrap || !tip) return;
+    let cur = null;
+    const show = month => {
+      if (wrap.classList.contains('dragging')) return; /* 拖拽中不弹 */
+      const txt = month.getAttribute('data-summary'); if (!txt) return;
+      tip.textContent = txt;
+      tip.removeAttribute('hidden'); tip.classList.add('show');
+      const r = month.getBoundingClientRect(); tip.style.left = '0px'; tip.style.top = '0px';
+      const tw = tip.offsetWidth, th = tip.offsetHeight, vw = window.innerWidth;
+      let left = Math.min(Math.max(8, r.left + r.width / 2 - tw / 2), vw - tw - 8);
+      let top = r.top - th - 8; if (top < 8) top = r.bottom + 8; /* 上缘放不下时翻到月块下方 */
+      tip.style.left = left + 'px'; tip.style.top = top + 'px';
+      cur = month;
+    };
+    const hide = () => { if (cur) { cur = null; tip.classList.remove('show'); tip.setAttribute('hidden', ''); } };
+    wrap.addEventListener('pointerover', e => {
+      const m = e.target.closest ? e.target.closest('.heat-month') : null;
+      if (m && m !== cur) show(m); else if (!m && cur) hide();
+    });
+    wrap.addEventListener('pointerleave', hide);
+    wrap.addEventListener('pointerdown', () => { if (cur) hide(); }); /* 触摸/拖拽起点先收起，避免气泡跟着拖动 */
+  })()
+
   function renderStats() {
     const labelEl = $('#periodLabel');
     if (labelEl) labelEl.textContent = PERIOD_LABEL[statsPeriod];
@@ -7095,6 +7836,9 @@
     const avgLabelEl = $('#avgLabel');
     if (avgLabelEl) avgLabelEl.textContent = cfg.avgText;
     updateGoalCard();
+    renderMonthCompare(); /* v1.7.25：月度对比卡随统计页刷新与运动筛选联动（applySportFilter 经 renderStats 触发） */
+    renderYearCompare(); /* v1.7.33：年度对比卡随统计页刷新与运动筛选联动 */
+    renderHeatmap(); /* v1.7.28：活跃热力图随统计页刷新与运动筛选联动（applySportFilter 经 renderStats 触发） */
   }
 
   /* ---------------- cumulative stats (v1.5.26) ----------------
@@ -7105,10 +7849,10 @@
      删除/恢复记录后等级进度同步变化；旧 profileData.totalSteps 个人步数档案字段仅作兼容保留，不再参与计算。 */
   const WEST_LAKE_KM = 7; /* 西湖环湖一周约 7 km（沿用原演示换算 428.6 / 61 ≈ 7.03 km/圈） */
   function renderCumulativeStats() {
-    const km = records.reduce((s, r) => s + (r.distance || 0), 0);
-    const sec = records.reduce((s, r) => s + (r.durationSec || 0), 0);
-    const steps = records.reduce((s, r) => s + (r.steps || 0), 0);
-    const kcal = records.reduce((s, r) => s + (r.kcal || 0), 0);
+    const km = activeRecords().reduce((s, r) => s + (r.distance || 0), 0); /* v1.7.19：按运动类型筛选 */
+    const sec = activeRecords().reduce((s, r) => s + (r.durationSec || 0), 0);
+    const steps = activeRecords().reduce((s, r) => s + (r.steps || 0), 0);
+    const kcal = activeRecords().reduce((s, r) => s + (r.kcal || 0), 0);
     const set = (id, val) => { const el = $('#' + id); if (el) el.textContent = val; };
     const setHTML = (id, html) => { const el = $('#' + id); if (el) el.innerHTML = html; };
     set('cumKm', km.toFixed(1));
@@ -7121,8 +7865,8 @@
     set('profileTotalSteps', fmtNum(steps));
     const laps = Math.floor(km / WEST_LAKE_KM);
     set('cumNote', laps >= 1 ? `相当于绕西湖走了约 ${laps} 圈` : `再走 ${(WEST_LAKE_KM - km).toFixed(1)} km 可绕西湖一圈`);
-    if (records.length) {
-      const firstTs = records.reduce((min, r) => Math.min(min, recordTsOf(r)), Infinity);
+    if (activeRecords().length) { /* v1.7.19：起始日期/相伴天数按所选类型的最早记录 */
+      const firstTs = activeRecords().reduce((min, r) => Math.min(min, recordTsOf(r)), Infinity);
       const d = new Date(firstTs);
       set('profileSince', `自 ${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`);
       /* v1.5.39：相伴天数按最早记录动态计算（当天为第 1 天，按自然日计，与「自 YYYY.M.D」同源） */
@@ -7146,10 +7890,6 @@
     const card = $('.settings-card');
     if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
     setTimeout(() => toast('设置都在这里'), 350);
-  });
-
-  $$('.settings-row[data-setting]').forEach(row => {
-    row.addEventListener('click', () => toast(`「${row.dataset.setting}」设置`));
   });
 
   /* ------------------------------------------------------------------
@@ -7289,7 +8029,7 @@
 
   /* v1.5.38：等级体系唯一步数来源——按真实记录合计，与统计页「累计步数」同源同步 */
   function totalStepsOf() {
-    return records.reduce((s, r) => s + (r.steps || 0), 0);
+    return activeRecords().reduce((s, r) => s + (r.steps || 0), 0); /* v1.7.19：按运动类型筛选 */
   }
 
   /* v1.7.15：Health Connect 真实步数桥接——仅安卓原生环境生效（网页版无 window.Capacitor 自动回退估算值）。
@@ -7300,6 +8040,20 @@ function nativeShell() {
   return typeof window !== 'undefined' && !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 }
 if (nativeShell()) document.documentElement.classList.add('native');
+
+/* v1.7.18：GPS 后台持续记录桥接——原生前台服务（ForegroundService 插件，startForeground/stopForeground）。
+   插件未装或非原生环境静默跳过，网页版不受影响；息屏/切走时前台服务保持 GPS 采集不中断。 */
+function bgAvailable() {
+  return nativeShell() && !!(window.Capacitor.Plugins && window.Capacitor.Plugins.ForegroundService);
+}
+async function bgStartTracking() {
+  if (!bgAvailable()) return;
+  try { await window.Capacitor.Plugins.ForegroundService.startForeground({ title: '山行 · 记录中', text: 'GPS 后台持续记录进行中' }); } catch (e) {}
+}
+async function bgStopTracking() {
+  if (!bgAvailable()) return;
+  try { await window.Capacitor.Plugins.ForegroundService.stopForeground(); } catch (e) {}
+}
 
 function hcAvailable() {
   return typeof window !== 'undefined' && window.Capacitor && window.Capacitor.isNativePlatform
@@ -7808,11 +8562,11 @@ function updateLevelUI() {
     const period = statsPeriod || 'week';
     /* v1.5.25：目标卡与每日距离卡/称号卡同口径——按记录时间戳的自然周期（本周=周一起、本月、本年）实时过滤 */
     const now = new Date();
-    const periodRecords = period === 'week'
-      ? records.filter(r => recordTsOf(r) >= weekStartTs(now))
+    const periodRecords = period === 'week' /* v1.7.19：目标卡按运动类型筛选口径 */
+      ? activeRecords().filter(r => recordTsOf(r) >= weekStartTs(now))
       : period === 'month'
-        ? records.filter(r => { const d = new Date(recordTsOf(r)); return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth(); })
-        : records.filter(r => new Date(recordTsOf(r)).getFullYear() === now.getFullYear());
+        ? activeRecords().filter(r => { const d = new Date(recordTsOf(r)); return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth(); })
+        : activeRecords().filter(r => new Date(recordTsOf(r)).getFullYear() === now.getFullYear());
     const periodDistance = periodRecords.reduce((sum, r) => sum + (r.distance || 0), 0);
     const periodSteps = periodRecords.reduce((sum, r) => sum + (r.steps || 0), 0);
     const periodDays = new Set(periodRecords.map(r => recordDateKey(r))).size;
@@ -7898,7 +8652,7 @@ function updateLevelUI() {
     if (!(target > 0)) return false;
     const end = weekTs + 7 * 864e5;
     let val = 0;
-    for (const r of records) {
+    for (const r of activeRecords()) { /* v1.7.19：按运动类型筛选 */
       const t = recordTsOf(r);
       if (t >= weekTs && t < end) val += isDistance ? (r.distance || 0) : (r.steps || 0);
     }
@@ -7910,7 +8664,7 @@ function updateLevelUI() {
     snapshotCurrentGoal(); /* 先落当前周目标快照（本周按当前目标判定，改目标即更新本周快照） */
     const ws = weekStartTs(new Date());
     let streak = goalWeekMet(ws) ? 1 : 0; /* 本周已达成即计入；未达成不中断（周未结束） */
-    const oldest = records.length ? Math.min(...records.map(r => recordTsOf(r))) : ws;
+    const oldest = activeRecords().length ? Math.min(...activeRecords().map(r => recordTsOf(r))) : ws; /* v1.7.19 */
     for (let i = 1; ws - i * 7 * 864e5 > oldest - 7 * 864e5; i++) {
       if (goalWeekMet(ws - i * 7 * 864e5)) streak++; else break; /* 未达成的历史周中断连续 */
     }
@@ -8964,6 +9718,9 @@ function updateLevelUI() {
     { key: 'award', name: '本周称号' },
     { key: 'best', name: '个人最佳' },
     { key: 'daily', name: '每日距离' },
+    { key: 'monthon', name: '月度对比' },
+    { key: 'yearon', name: '年度对比' },
+    { key: 'heatmap', name: '活跃热力' },
     { key: 'cumulative', name: '累计数据' }
   ];
   const STAT_CARDS_KEY = 'shanxing:statCards';
@@ -9142,11 +9899,90 @@ function updateLevelUI() {
 
   setPickerFromHex(customColor);
 
+  /* v1.7.38：提醒与通知真实化——主开关持久化 + 每日固定时间健走提醒 + 周目标进度提醒（周日未达标提醒补量） */
+  const NOTIFY_KEY = 'shanxing:notify';
+  const NOTIFY_TIME_KEY = 'shanxing:notifyTime';
+  const NOTIFY_GOAL_KEY = 'shanxing:notifyGoal';
+  const NOTIFY_LAST_KEY = 'shanxing:notifyLast';
+  const notifyPrefOn = () => (localStorage.getItem(NOTIFY_KEY) || 'on') === 'on';
+  const goalNotifyOn = () => (localStorage.getItem(NOTIFY_GOAL_KEY) || 'on') === 'on';
+  const notifyTimeStr = () => localStorage.getItem(NOTIFY_TIME_KEY) || '19:30';
+  const loadNotifyLast = () => { try { return JSON.parse(localStorage.getItem(NOTIFY_LAST_KEY)) || {}; } catch (e) { return {}; } };
+  const saveNotifyLast = o => { try { localStorage.setItem(NOTIFY_LAST_KEY, JSON.stringify(o)); } catch (e) { /* 存储失败不影响提醒 */ } };
   const notifySwitch = $('#notifySwitch');
+  const goalNotifySwitch = $('#goalNotifySwitch');
+  function syncNotifyUI() {
+    notifySwitch.setAttribute('aria-checked', String(notifyPrefOn()));
+    goalNotifySwitch.setAttribute('aria-checked', String(goalNotifyOn()));
+    $('#notifyTimeMeta').textContent = '每天 ' + notifyTimeStr();
+    $('#notifyTimeInput').value = notifyTimeStr();
+    $('#notifySettingMeta').textContent = notifyPrefOn() ? '每天 ' + notifyTimeStr() : '已关闭';
+    $('#notifyTimeRow').classList.toggle('dim', !notifyPrefOn());
+    $('#notifyGoalRow').classList.toggle('dim', !notifyPrefOn());
+  }
+  function syncNativeNotify() { /* APK 端本地通知桥：装了 LocalNotifications 插件时注册每日系统通知，网页端静默跳过 */
+    try {
+      const ln = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications;
+      if (!ln) return;
+      Promise.resolve(ln.cancelAll()).catch(() => {}).then(() => {
+        if (!notifyPrefOn()) return;
+        const parts = notifyTimeStr().split(':');
+        Promise.resolve(ln.schedule({ notifications: [{ id: 17381, title: '山行 · 该走走啦', body: '到点了，出门走走吧', schedule: { on: { hour: Number(parts[0]), minute: Number(parts[1]) }, allowWhileIdle: true } }] })).catch(() => {});
+      });
+    } catch (e) { /* 无插件环境忽略 */ }
+  }
+  function fireReminder(msg) {
+    toast(msg);
+    try { if ('Notification' in window && Notification.permission === 'granted') new Notification('山行 · 健走提醒', { body: msg }); } catch (e) { /* 系统通知失败不影响应用内提醒 */ }
+  }
+  function notifyTick(now) {
+    now = now || new Date(); /* 参数化便于测试注入场景时间 */
+    if (!notifyPrefOn()) return;
+    const dayKey = now.getFullYear() + '-' + pad2(now.getMonth() + 1) + '-' + pad2(now.getDate());
+    const cur = pad2(now.getHours()) + ':' + pad2(now.getMinutes());
+    const last = loadNotifyLast();
+    if (last.daily !== dayKey && cur >= notifyTimeStr()) { /* 每日健走提醒：到点且当天未提醒过 */
+      last.daily = dayKey;
+      saveNotifyLast(last);
+      fireReminder('到点了，出门走走吧');
+    }
+    if (goalNotifyOn() && now.getDay() === 0 && now.getHours() >= 10 && last.goal !== dayKey) { /* 周目标进度提醒：周日 10 点后检查本周缺口 */
+      const ws = weekStartTs(now);
+      const weekRecs = activeRecords().filter(r => recordTsOf(r) >= ws);
+      const isDistance = profileData.goal.type !== 'steps';
+      const done = isDistance ? weekRecs.reduce((s, r) => s + (r.distance || 0), 0) : weekRecs.reduce((s, r) => s + (r.steps || 0), 0);
+      const target = isDistance ? profileData.goal.distance : profileData.goal.steps;
+      if (target > 0 && done < target) {
+        const left = target - done;
+        const leftTxt = isDistance ? left.toFixed(1) + ' km' : Math.round(left).toLocaleString('en-US') + ' 步';
+        last.goal = dayKey;
+        saveNotifyLast(last);
+        fireReminder('本周还差 ' + leftTxt + ' 达标，出门补一段吧');
+      }
+    }
+  }
   notifySwitch.addEventListener('click', () => {
-    const next = notifySwitch.getAttribute('aria-checked') !== 'true';
-    notifySwitch.setAttribute('aria-checked', String(next));
+    const next = !notifyPrefOn();
+    localStorage.setItem(NOTIFY_KEY, next ? 'on' : 'off');
+    syncNotifyUI();
+    syncNativeNotify();
     toast(next ? '提醒与通知已开启' : '提醒与通知已关闭');
+    if (next && 'Notification' in window && Notification.permission === 'default') { try { Notification.requestPermission().catch(() => {}); } catch (e) { /* 老浏览器忽略 */ } }
+  });
+  $('#notifySettingRow').addEventListener('click', () => openModal($('#notifyLayer'))); /* v1.7.39：弹窗式入口 */
+  goalNotifySwitch.addEventListener('click', () => {
+    const next = !goalNotifyOn();
+    localStorage.setItem(NOTIFY_GOAL_KEY, next ? 'on' : 'off');
+    syncNotifyUI();
+    toast(next ? '周目标进度提醒已开启' : '周目标进度提醒已关闭');
+  });
+  $('#notifyTimeInput').addEventListener('change', () => { /* v1.7.39：行内时间即改即存 */
+    const v = $('#notifyTimeInput').value;
+    if (!/^\d{2}:\d{2}$/.test(v)) { toast('请选择一个提醒时间'); return; }
+    localStorage.setItem(NOTIFY_TIME_KEY, v);
+    syncNotifyUI();
+    syncNativeNotify();
+    toast('每日提醒已设为 ' + v);
   });
 
   document.addEventListener('keydown', e => {
@@ -9155,7 +9991,7 @@ function updateLevelUI() {
     else if (liveLayerPanel && liveLayerPanel.classList.contains('open')) closeLivePanel();
     else if (activeModal) closeModal(activeModal);
     else if (colorLayer.classList.contains('open')) closeColorPicker();
-    else if (finishLayer.classList.contains('open')) closeFinishSheet();
+    else if (finishLayer.classList.contains('open')) finishSave(true); /* v1.7.37：Esc 自动保存 */
     else if (detailLayer.classList.contains('open')) closeDetail();
   });
 
@@ -9172,6 +10008,10 @@ function updateLevelUI() {
   updateReadyToday(); /* v1.5.41：启动即按当日记录合计刷新首页「今日已走」 */
   renderAwardProgress(); /* v1.5.24：启动即按当前周重算称号进度（每周一自动重置） */
   renderCumulativeStats(); /* v1.5.26：启动即按真实记录合计累计数据（里程/时长/步数/消耗/圈数/起始日期） */
+  syncNotifyUI(); /* v1.7.38：启动恢复提醒开关/子行显示/时间文案 */
+  syncNativeNotify(); /* v1.7.38：APK 端注册每日本地通知（检测到插件时） */
+  setInterval(notifyTick, 30000); /* v1.7.38：提醒引擎每 30 秒检查一次 */
+  setTimeout(notifyTick, 1200); /* v1.7.38：启动后补查一次——今日已到点未提醒则立即提醒 */
 })();
 </script>
   <script>
